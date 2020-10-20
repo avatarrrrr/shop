@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
+///Widget Main
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+///Tela home da aplicação
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
