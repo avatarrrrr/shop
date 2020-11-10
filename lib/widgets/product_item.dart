@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
-import '../views/product_detail_screen.dart';
 import '../utils/app_routes.dart';
 
 ///Componente que representa um produto
