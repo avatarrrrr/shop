@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 
 ///Model que representa um produto
-class Product {
+// ignore: prefer_mixin
+class Product with ChangeNotifier {
   ///Identificador do produto
   final String id;
 
@@ -29,4 +30,10 @@ class Product {
     @required this.imageUrl,
     this.isFavorite = false,
   });
+
+  ///Inverte o valor do booleano isFavorite e notifca os observers
+  void toggleFavorite() {
+    isFavorite = !isFavorite;
+    notifyListeners();
+  }
 }
