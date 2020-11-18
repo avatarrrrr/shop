@@ -17,9 +17,10 @@ class ProductOverviewScreen extends StatefulWidget {
 }
 
 class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
+  bool _showFavoriteOnly = false;
+
   @override
   Widget build(BuildContext context) {
-    var _showFavoriteOnly = false;
     return Scaffold(
       appBar: AppBar(
         title: Text('Minha Loja'),
