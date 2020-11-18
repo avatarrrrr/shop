@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/dummy_data.dart';
-import '../models/product.dart';
+import 'product.dart';
 
 ///Classe que encapsulará a lista de produtos
 // ignore: prefer_mixin
