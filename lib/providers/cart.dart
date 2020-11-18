@@ -1,0 +1,61 @@
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
+import 'product.dart';
+
+///Classe que representa um item do carrinho
+class CartItem {
+  ///ID do produto
+  final String id;
+
+  ///Nome do produto
+  final String title;
+
+  ///Quantidade a ser comprada
+  final int quantity;
+
+  ///Preço do produto
+  final double price;
+
+  ///Construtor que irá pegar essas dados, tudo será requerido
+  CartItem({
+    @required this.id,
+    @required this.title,
+    @required this.quantity,
+    @required this.price,
+  });
+}
+
+///Classe que representa um carrinho
+// ignore: prefer_mixin
+class Cart with ChangeNotifier {
+  Map<String, CartItem> _items;
+
+  ///Obtem uma cópia dos items
+  Map<String, CartItem> get item => {..._items};
+
+  ///Adiciona um item no carrinho, se ele já tiver, aumenta sua quantidade
+  void addItem(Product product) {
+    if (_items.containsKey(product.id)) {
+      _items.update(product.id, (existingItem) {
+        return CartItem(
+          id: existingItem.id,
+          title: existingItem.title,
+          quantity: existingItem.quantity + 1,
+          price: existingItem.price,
+        );
+      });
+    } else {
+      _items.putIfAbsent(product.id, () {
+        return CartItem(
+          id: Random().nextDouble().toString(),
+          title: product.title,
+          quantity: 1,
+          price: product.price,
+        );
+      });
+    }
+
+    notifyListeners();
+  }
+}
