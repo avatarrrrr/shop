@@ -29,10 +29,13 @@ class CartItem {
 ///Classe que representa um carrinho
 // ignore: prefer_mixin
 class Cart with ChangeNotifier {
-  Map<String, CartItem> _items;
+  final Map<String, CartItem> _items = {};
 
   ///Obtem uma cópia dos items
   Map<String, CartItem> get item => {..._items};
+
+  ///Retorna a quantidade de items no carrinho
+  int get itemCount => _items.length;
 
   ///Adiciona um item no carrinho, se ele já tiver, aumenta sua quantidade
   void addItem(Product product) {
