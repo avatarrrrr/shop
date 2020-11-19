@@ -37,6 +37,15 @@ class Cart with ChangeNotifier {
   ///Retorna a quantidade de items no carrinho
   int get itemCount => _items.length;
 
+  ///Obtem o preço de totos os produtos no carrinho
+  double get totalAmount {
+    var total = 0.0;
+    _items.forEach((key, itemCart) {
+      total += itemCart.price * itemCart.quantity;
+    });
+    return total;
+  }
+
   ///Adiciona um item no carrinho, se ele já tiver, aumenta sua quantidade
   void addItem(Product product) {
     if (_items.containsKey(product.id)) {
