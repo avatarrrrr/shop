@@ -5,8 +5,11 @@ import 'product.dart';
 
 ///Classe que representa um item do carrinho
 class CartItem {
-  ///ID do produto
+  ///ID do produto no carrinho
   final String id;
+
+  ///ID do produto
+  final String productID;
 
   ///Nome do produto
   final String title;
@@ -20,6 +23,7 @@ class CartItem {
   ///Construtor que irá pegar essas dados, tudo será requerido
   CartItem({
     @required this.id,
+    @required this.productID,
     @required this.title,
     @required this.quantity,
     @required this.price,
@@ -52,6 +56,7 @@ class Cart with ChangeNotifier {
       _items.update(product.id, (existingItem) {
         return CartItem(
           id: existingItem.id,
+          productID: product.id,
           title: existingItem.title,
           quantity: existingItem.quantity + 1,
           price: existingItem.price,
@@ -61,6 +66,7 @@ class Cart with ChangeNotifier {
       _items.putIfAbsent(product.id, () {
         return CartItem(
           id: Random().nextDouble().toString(),
+          productID: product.id,
           title: product.title,
           quantity: 1,
           price: product.price,
@@ -68,6 +74,12 @@ class Cart with ChangeNotifier {
       });
     }
 
+    notifyListeners();
+  }
+
+  ///Remove um item do carrinho
+  void removeItem(String productID) {
+    _items.remove(productID);
     notifyListeners();
   }
 }
