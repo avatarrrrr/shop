@@ -32,10 +32,10 @@ class Cart with ChangeNotifier {
   final Map<String, CartItem> _items = {};
 
   ///Obtem uma cópia dos items
-  Map<String, CartItem> get item => {..._items};
+  Map<String, CartItem> get items => {..._items};
 
   ///Retorna a quantidade de items no carrinho
-  int get itemCount => _items.length;
+  int get itemsCount => _items.length;
 
   ///Obtem o preço de totos os produtos no carrinho
   double get totalAmount {
