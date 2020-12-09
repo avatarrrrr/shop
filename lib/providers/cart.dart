@@ -82,4 +82,10 @@ class Cart with ChangeNotifier {
     _items.remove(productID);
     notifyListeners();
   }
+
+  ///Limpa o carrinho
+  void clear() {
+    _items.clear();
+    notifyListeners();
+  }
 }
