@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart.dart';
+import '../providers/orders.dart';
 import '../widgets/cart_item_widget.dart';
 
 ///Tela que mostra os produtos no carrinho
@@ -42,9 +43,15 @@ class CartScreen extends StatelessWidget {
                   ),
                   Spacer(),
                   FlatButton(
-                    onPressed: () {},
                     child: Text('COMPRAR'),
                     textColor: Theme.of(context).primaryColor,
+                    onPressed: () {
+                      Provider.of<Orders>(context, listen: false).addOrder(
+                        cartItems,
+                        cart.totalAmount,
+                      );
+                      cart.clear();
+                    },
                   )
                 ],
               ),

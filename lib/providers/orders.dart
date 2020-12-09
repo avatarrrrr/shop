@@ -36,13 +36,13 @@ class Orders with ChangeNotifier {
   List<Order> get orders => [..._orders];
 
   ///Adiciona um pedido
-  void addOrder(List<CartItem> products, double total) {
+  void addOrder(Cart cart) {
     _orders.insert(
       0,
       Order(
         id: Random().nextDouble().toString(),
-        products: products,
-        total: total,
+        products: cart.items.values,
+        total: cart.totalAmount,
         date: DateTime.now(),
       ),
     );
