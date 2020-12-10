@@ -30,18 +30,21 @@ class Order {
 ///Agrupa todos os pedidos feitos, você só poderá criar um pedido através dele
 // ignore: prefer_mixin
 class Orders with ChangeNotifier {
-  List<Order> _orders;
+  final List<Order> _items = [];
 
   ///Obtém uma cópia dos pedidos armazenados
-  List<Order> get orders => [..._orders];
+  List<Order> get items => [..._items];
+
+  ///Obtem a quantidade de pedidos
+  int get itemsCount => _items.length;
 
   ///Adiciona um pedido
   void addOrder(Cart cart) {
-    _orders.insert(
+    _items.insert(
       0,
       Order(
         id: Random().nextDouble().toString(),
-        products: cart.items.values,
+        products: cart.items.values.toList(),
         total: cart.totalAmount,
         date: DateTime.now(),
       ),
