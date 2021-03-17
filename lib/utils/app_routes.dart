@@ -11,4 +11,7 @@ class AppRoutes {
 
   ///Rota para a tela de pedidos
   static const orders = '/orders';
+
+  ///Rota para a tela de produtos
+  static const products = '/products';
 }

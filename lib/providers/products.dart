@@ -12,6 +12,9 @@ class Products with ChangeNotifier {
     return [..._items];
   }
 
+  ///Retorna o número de produtos
+  int get itemsCount => _items.length;
+
   ///Retorna uma cópia somente dos produtos favoritos
   List<Product> get favoriteItems {
     return _items.where((item) => item.isFavorite).toList();
