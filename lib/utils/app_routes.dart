@@ -14,4 +14,7 @@ class AppRoutes {
 
   ///Rota para a tela de produtos
   static const products = '/products';
+
+  ///Rota para o formulário para adicionar/editar um produto
+  static const productForm = '/products-form';
 }
