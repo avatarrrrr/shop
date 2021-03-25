@@ -58,6 +58,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 onFieldSubmitted: (_) =>
                     FocusScope.of(context).requestFocus(_priceFocusNode),
                 onSaved: (value) => _formData['title'] = value,
+                validator: (value) {
+                  if (value.isEmpty || value.trim().isEmpty) {
+                    return 'Título inválido!';
+                  } else if (value.trim().length < 5) {
+                    return 'O título deve ter pelo menos 5 letras!';
+                  } else {
+                    return null;
+                  }
+                },
               ),
               TextFormField(
                 focusNode: _priceFocusNode,
@@ -71,6 +80,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 onSaved: (value) => _formData['price'] = double.parse(value),
                 onFieldSubmitted: (_) =>
                     FocusScope.of(context).requestFocus(_descriptionFocusNode),
+                validator: (value) {
+                  if (value.isEmpty ||
+                      double.tryParse(value) == null ||
+                      double.tryParse(value) < 0) {
+                    return 'Preço inválido!';
+                  } else {
+                    return null;
+                  }
+                },
               ),
               TextFormField(
                 maxLines: 3,
@@ -80,6 +98,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                   labelText: 'Descrição',
                 ),
                 onSaved: (value) => _formData['description'] = value,
+                validator: (value) {
+                  if (value.isEmpty || value.trim().isEmpty) {
+                    return 'Descrição inválida!';
+                  } else if (value.trim().length < 10) {
+                    return 'A descrição deve ter pelo menos 10 letras!';
+                  } else {
+                    return null;
+                  }
+                },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -95,6 +122,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                       ),
                       onFieldSubmitted: (_) => saveForm(),
                       onSaved: (value) => _formData['imageUrl'] = value,
+                      validator: (value) {
+                        if (value.isEmpty ||
+                            value.trim().isEmpty ||
+                            !isValidImageUrl(value)) {
+                          return 'URL inválida!';
+                        } else {
+                          return null;
+                        }
+                      },
                     ),
                   ),
                   Container(
@@ -127,9 +163,34 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     );
   }
 
-  void _updateImage() => setState(() {});
+  void _updateImage() {
+    if (isValidImageUrl(_imageUrlController.text)) {
+      setState(() {});
+    }
+  }
+
+  bool isValidImageUrl(String url) {
+    var isValidProtocol = url.toLowerCase().startsWith('http://') ||
+        url.toLowerCase().startsWith('https://');
+    var isValidImageExtension = url.toLowerCase().endsWith('.png') ||
+        url.toLowerCase().endsWith('.jpg') ||
+        url.toLowerCase().endsWith('.jpeg');
+
+    return isValidProtocol && isValidImageExtension;
+  }
 
   void saveForm() {
+    if (_form.currentState.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Você não poderá submeter o formulário com erros de validação!',
+          ),
+        ),
+      );
+      return;
+    }
+
     _form.currentState.save();
     final newProduct = Product(
       id: Random().nextDouble().toString(),
