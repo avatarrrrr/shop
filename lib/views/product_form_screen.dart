@@ -1,7 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../providers/product.dart';
+import '../providers/products.dart';
 
 ///Tela para a adição/edição de um produto
 class ProductFormScreen extends StatefulWidget {
@@ -21,6 +21,22 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   void initState() {
     super.initState();
     _imageUrlFocusNode.addListener(_updateImage);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_formData.isEmpty) {
+      final product = ModalRoute.of(context).settings.arguments as Product;
+      if (product != null) {
+        _formData['id'] = product.id;
+        _formData['title'] = product.title;
+        _formData['price'] = product.price;
+        _formData['description'] = product.description;
+        _formData['imageUrl'] = product.imageUrl;
+        _imageUrlController.text = product.imageUrl;
+      }
+    }
   }
 
   @override
@@ -51,6 +67,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           child: ListView(
             children: [
               TextFormField(
+                initialValue: _formData['title'],
                 decoration: InputDecoration(
                   labelText: 'Título',
                 ),
@@ -69,6 +86,9 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 },
               ),
               TextFormField(
+                initialValue: _formData['price'] != null
+                    ? _formData['price'].toString()
+                    : '',
                 focusNode: _priceFocusNode,
                 decoration: InputDecoration(
                   labelText: 'Preço',
@@ -91,6 +111,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 },
               ),
               TextFormField(
+                initialValue: _formData['description'],
                 maxLines: 3,
                 focusNode: _descriptionFocusNode,
                 keyboardType: TextInputType.multiline,
@@ -180,7 +201,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   }
 
   void saveForm() {
-    if (_form.currentState.validate()) {
+    if (!_form.currentState.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -190,14 +211,20 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       );
       return;
     }
-
     _form.currentState.save();
-    final newProduct = Product(
-      id: Random().nextDouble().toString(),
+    final product = Product(
+      id: _formData['id'],
       title: _formData['title'],
       description: _formData['description'],
       price: _formData['price'],
       imageUrl: _formData['imageUrl'],
     );
+    final products = context.read<Products>();
+    if (_formData['id'] == null) {
+      products.addProduct(product);
+    } else {
+      products.updateProduct(product);
+    }
+    Navigator.of(context).pop();
   }
 }

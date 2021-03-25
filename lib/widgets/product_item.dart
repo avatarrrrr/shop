@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../providers/product.dart';
+import '../utils/app_routes.dart';
 
 ///Componente que representa um produto da tela 'Gerenciar Produtos'
 class ProductItem extends StatelessWidget {
@@ -23,7 +24,10 @@ class ProductItem extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.edit),
               color: Theme.of(context).primaryColor,
-              onPressed: () {},
+              onPressed: () => Navigator.of(context).pushNamed(
+                AppRoutes.productForm,
+                arguments: product,
+              ),
             ),
             IconButton(
               icon: Icon(Icons.delete),
