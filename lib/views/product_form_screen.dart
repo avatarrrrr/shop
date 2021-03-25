@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import '../providers/product.dart';
 
 ///Tela para a adição/edição de um produto
 class ProductFormScreen extends StatefulWidget {
@@ -11,8 +14,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   final _descriptionFocusNode = FocusNode();
   final _imageUrlFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
-
-  void _updateImage() => setState(() {});
+  final _form = GlobalKey<FormState>();
+  final _formData = <String, Object>{};
 
   @override
   void initState() {
@@ -34,8 +37,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Formulário Produto'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: saveForm,
+          ),
+        ],
       ),
       body: Form(
+        key: _form,
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: ListView(
@@ -47,6 +57,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) =>
                     FocusScope.of(context).requestFocus(_priceFocusNode),
+                onSaved: (value) => _formData['title'] = value,
               ),
               TextFormField(
                 focusNode: _priceFocusNode,
@@ -57,6 +68,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                   decimal: true,
                 ),
                 textInputAction: TextInputAction.next,
+                onSaved: (value) => _formData['price'] = double.parse(value),
                 onFieldSubmitted: (_) =>
                     FocusScope.of(context).requestFocus(_descriptionFocusNode),
               ),
@@ -67,6 +79,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 decoration: InputDecoration(
                   labelText: 'Descrição',
                 ),
+                onSaved: (value) => _formData['description'] = value,
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -76,10 +89,12 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                       controller: _imageUrlController,
                       focusNode: _imageUrlFocusNode,
                       keyboardType: TextInputType.url,
+                      textInputAction: TextInputAction.done,
                       decoration: InputDecoration(
                         labelText: 'URL da Imagem',
                       ),
-                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (_) => saveForm(),
+                      onSaved: (value) => _formData['imageUrl'] = value,
                     ),
                   ),
                   Container(
@@ -109,6 +124,19 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _updateImage() => setState(() {});
+
+  void saveForm() {
+    _form.currentState.save();
+    final newProduct = Product(
+      id: Random().nextDouble().toString(),
+      title: _formData['title'],
+      description: _formData['description'],
+      price: _formData['price'],
+      imageUrl: _formData['imageUrl'],
     );
   }
 }
