@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import '../data/dummy_data.dart';
 import 'product.dart';
 
@@ -23,17 +25,33 @@ class Products with ChangeNotifier {
   }
 
   ///Função para adicionar um produto
-  void addProduct(Product newProduct) {
-    _items.add(
-      Product(
-        id: Random().nextDouble().toString(),
-        title: newProduct.title,
-        price: newProduct.price,
-        description: newProduct.description,
-        imageUrl: newProduct.imageUrl,
-      ),
+  Future<void> addProduct(Product newProduct) {
+    var url = Uri.parse(
+        'https://shop-project-9673b-default-rtdb.firebaseio.com/products.json');
+    return http
+        .post(url,
+            body: json.encode({
+              'title': newProduct.title,
+              'description': newProduct.description,
+              'price': newProduct.price,
+              'imageUrl': newProduct.imageUrl,
+              'isFavorite': newProduct.isFavorite,
+            }))
+        .then(
+      (response) {
+        var id = json.decode(response.body)['name'];
+        _items.add(
+          Product(
+            id: id,
+            title: newProduct.title,
+            price: newProduct.price,
+            description: newProduct.description,
+            imageUrl: newProduct.imageUrl,
+          ),
+        );
+        notifyListeners();
+      },
     );
-    notifyListeners();
   }
 
   ///Atualiza um produto

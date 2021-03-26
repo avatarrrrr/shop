@@ -16,6 +16,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   final _imageUrlController = TextEditingController();
   final _form = GlobalKey<FormState>();
   final _formData = <String, Object>{};
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -52,7 +53,9 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Formulário Produto'),
+        title: Text(
+          _formData['title'] == null ? 'Novo produto' : _formData['title'],
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.save),
@@ -60,127 +63,132 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           ),
         ],
       ),
-      body: Form(
-        key: _form,
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: ListView(
-            children: [
-              TextFormField(
-                initialValue: _formData['title'],
-                decoration: InputDecoration(
-                  labelText: 'Título',
-                ),
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) =>
-                    FocusScope.of(context).requestFocus(_priceFocusNode),
-                onSaved: (value) => _formData['title'] = value,
-                validator: (value) {
-                  if (value.isEmpty || value.trim().isEmpty) {
-                    return 'Título inválido!';
-                  } else if (value.trim().length < 5) {
-                    return 'O título deve ter pelo menos 5 letras!';
-                  } else {
-                    return null;
-                  }
-                },
-              ),
-              TextFormField(
-                initialValue: _formData['price'] != null
-                    ? _formData['price'].toString()
-                    : '',
-                focusNode: _priceFocusNode,
-                decoration: InputDecoration(
-                  labelText: 'Preço',
-                ),
-                keyboardType: TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                textInputAction: TextInputAction.next,
-                onSaved: (value) => _formData['price'] = double.parse(value),
-                onFieldSubmitted: (_) =>
-                    FocusScope.of(context).requestFocus(_descriptionFocusNode),
-                validator: (value) {
-                  if (value.isEmpty ||
-                      double.tryParse(value) == null ||
-                      double.tryParse(value) < 0) {
-                    return 'Preço inválido!';
-                  } else {
-                    return null;
-                  }
-                },
-              ),
-              TextFormField(
-                initialValue: _formData['description'],
-                maxLines: 3,
-                focusNode: _descriptionFocusNode,
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                  labelText: 'Descrição',
-                ),
-                onSaved: (value) => _formData['description'] = value,
-                validator: (value) {
-                  if (value.isEmpty || value.trim().isEmpty) {
-                    return 'Descrição inválida!';
-                  } else if (value.trim().length < 10) {
-                    return 'A descrição deve ter pelo menos 10 letras!';
-                  } else {
-                    return null;
-                  }
-                },
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _imageUrlController,
-                      focusNode: _imageUrlFocusNode,
-                      keyboardType: TextInputType.url,
-                      textInputAction: TextInputAction.done,
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Form(
+              key: _form,
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: ListView(
+                  children: [
+                    TextFormField(
+                      initialValue: _formData['title'],
                       decoration: InputDecoration(
-                        labelText: 'URL da Imagem',
+                        labelText: 'Título',
                       ),
-                      onFieldSubmitted: (_) => saveForm(),
-                      onSaved: (value) => _formData['imageUrl'] = value,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) =>
+                          FocusScope.of(context).requestFocus(_priceFocusNode),
+                      onSaved: (value) => _formData['title'] = value,
                       validator: (value) {
-                        if (value.isEmpty ||
-                            value.trim().isEmpty ||
-                            !isValidImageUrl(value)) {
-                          return 'URL inválida!';
+                        if (value.isEmpty || value.trim().isEmpty) {
+                          return 'Título inválido!';
+                        } else if (value.trim().length < 5) {
+                          return 'O título deve ter pelo menos 5 letras!';
                         } else {
                           return null;
                         }
                       },
                     ),
-                  ),
-                  Container(
-                    height: 100,
-                    width: 100,
-                    margin: const EdgeInsets.only(
-                      top: 10,
-                      left: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 1,
+                    TextFormField(
+                      initialValue: _formData['price'] != null
+                          ? _formData['price'].toString()
+                          : '',
+                      focusNode: _priceFocusNode,
+                      decoration: InputDecoration(
+                        labelText: 'Preço',
                       ),
+                      keyboardType: TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      textInputAction: TextInputAction.next,
+                      onSaved: (value) =>
+                          _formData['price'] = double.parse(value),
+                      onFieldSubmitted: (_) => FocusScope.of(context)
+                          .requestFocus(_descriptionFocusNode),
+                      validator: (value) {
+                        if (value.isEmpty ||
+                            double.tryParse(value) == null ||
+                            double.tryParse(value) < 0) {
+                          return 'Preço inválido!';
+                        } else {
+                          return null;
+                        }
+                      },
                     ),
-                    alignment: Alignment.center,
-                    child: _imageUrlController.text.isEmpty
-                        ? Text('Informe a URL')
-                        : FittedBox(
-                            child: Image.network(_imageUrlController.text),
-                            fit: BoxFit.cover,
+                    TextFormField(
+                      initialValue: _formData['description'],
+                      maxLines: 3,
+                      focusNode: _descriptionFocusNode,
+                      keyboardType: TextInputType.multiline,
+                      decoration: InputDecoration(
+                        labelText: 'Descrição',
+                      ),
+                      onSaved: (value) => _formData['description'] = value,
+                      validator: (value) {
+                        if (value.isEmpty || value.trim().isEmpty) {
+                          return 'Descrição inválida!';
+                        } else if (value.trim().length < 10) {
+                          return 'A descrição deve ter pelo menos 10 letras!';
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _imageUrlController,
+                            focusNode: _imageUrlFocusNode,
+                            keyboardType: TextInputType.url,
+                            textInputAction: TextInputAction.done,
+                            decoration: InputDecoration(
+                              labelText: 'URL da Imagem',
+                            ),
+                            onFieldSubmitted: (_) => saveForm(),
+                            onSaved: (value) => _formData['imageUrl'] = value,
+                            validator: (value) {
+                              if (value.isEmpty ||
+                                  value.trim().isEmpty ||
+                                  !isValidImageUrl(value)) {
+                                return 'URL inválida!';
+                              } else {
+                                return null;
+                              }
+                            },
                           ),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
+                        ),
+                        Container(
+                          height: 100,
+                          width: 100,
+                          margin: const EdgeInsets.only(
+                            top: 10,
+                            left: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: _imageUrlController.text.isEmpty
+                              ? Text('Informe a URL')
+                              : Image.network(
+                                  _imageUrlController.text,
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
     );
   }
 
@@ -219,12 +227,19 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       price: _formData['price'],
       imageUrl: _formData['imageUrl'],
     );
+
+    setState(() => _isLoading = true);
+
     final products = context.read<Products>();
     if (_formData['id'] == null) {
-      products.addProduct(product);
+      products.addProduct(product).then(
+        (_) {
+          setState(() => _isLoading = false);
+          Navigator.of(context).pop();
+        },
+      );
     } else {
       products.updateProduct(product);
     }
-    Navigator.of(context).pop();
   }
 }
