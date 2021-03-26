@@ -23,18 +23,24 @@ class ProductsScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: ListView.builder(
-          itemCount: products.itemsCount,
-          itemBuilder: (context, [index]) => Column(
-            children: [
-              ProductItem(productsItems[index]),
-              Divider(),
-            ],
+      body: RefreshIndicator(
+        onRefresh: () => _refreshProducts(context),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: ListView.builder(
+            itemCount: products.itemsCount,
+            itemBuilder: (context, [index]) => Column(
+              children: [
+                ProductItem(productsItems[index]),
+                Divider(),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
+  Future<void> _refreshProducts(BuildContext context) =>
+      context.read<Products>().loadProducts();
 }

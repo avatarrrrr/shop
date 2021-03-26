@@ -1,15 +1,15 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../data/dummy_data.dart';
 import 'product.dart';
 
 ///Classe que encapsulará a lista de produtos
 // ignore: prefer_mixin
 class Products with ChangeNotifier {
-  final List<Product> _items = dummyProducts;
+  final _baseUrl = Uri.parse(
+      'https://shop-project-9673b-default-rtdb.firebaseio.com/products');
+  final List<Product> _items = [];
 
   ///Retorna uma cópia da lista de produtos
   List<Product> get items {
@@ -24,34 +24,52 @@ class Products with ChangeNotifier {
     return _items.where((item) => item.isFavorite).toList();
   }
 
-  ///Função para adicionar um produto
-  Future<void> addProduct(Product newProduct) {
-    var url = Uri.parse(
-        'https://shop-project-9673b-default-rtdb.firebaseio.com/products.json');
-    return http
-        .post(url,
-            body: json.encode({
-              'title': newProduct.title,
-              'description': newProduct.description,
-              'price': newProduct.price,
-              'imageUrl': newProduct.imageUrl,
-              'isFavorite': newProduct.isFavorite,
-            }))
-        .then(
-      (response) {
-        var id = json.decode(response.body)['name'];
-        _items.add(
+  ///Carrega os produtos que estão no banco de dados
+  Future<void> loadProducts() async {
+    final response = await http.get(Uri.parse('$_baseUrl.json'));
+    Map<String, dynamic> data = json.decode(response.body);
+    _items.clear();
+    if (data != null) {
+      data.forEach(
+        (productId, productData) => _items.add(
           Product(
-            id: id,
-            title: newProduct.title,
-            price: newProduct.price,
-            description: newProduct.description,
-            imageUrl: newProduct.imageUrl,
+            id: productId,
+            title: productData['title'],
+            description: productData['description'],
+            price: productData['price'],
+            imageUrl: productData['imageUrl'],
+            isFavorite: productData['isFavorite'],
           ),
-        );
-        notifyListeners();
-      },
+        ),
+      );
+      notifyListeners();
+    }
+    return Future.value();
+  }
+
+  ///Função para adicionar um produto
+  Future<void> addProduct(Product newProduct) async {
+    final response = await http.post(
+      Uri.parse('$_baseUrl.json'),
+      body: json.encode({
+        'title': newProduct.title,
+        'description': newProduct.description,
+        'price': newProduct.price,
+        'imageUrl': newProduct.imageUrl,
+        'isFavorite': newProduct.isFavorite,
+      }),
     );
+    var id = json.decode(response.body)['name'];
+    _items.add(
+      Product(
+        id: id,
+        title: newProduct.title,
+        price: newProduct.price,
+        description: newProduct.description,
+        imageUrl: newProduct.imageUrl,
+      ),
+    );
+    notifyListeners();
   }
 
   ///Atualiza um produto

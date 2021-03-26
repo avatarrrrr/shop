@@ -208,7 +208,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     return isValidProtocol && isValidImageExtension;
   }
 
-  void saveForm() {
+  Future<void> saveForm() async {
     if (!_form.currentState.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -232,12 +232,26 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
     final products = context.read<Products>();
     if (_formData['id'] == null) {
-      products.addProduct(product).then(
-        (_) {
-          setState(() => _isLoading = false);
-          Navigator.of(context).pop();
-        },
-      );
+      try {
+        await products.addProduct(product);
+        Navigator.of(context).pop();
+      } on Exception catch (_) {
+        await showDialog<Null>(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text('Ocorreu um erro!'),
+            content: Text('Ocorreu um erro no salvamento do produto!'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('Fechar'),
+              ),
+            ],
+          ),
+        );
+      } finally {
+        setState(() => _isLoading = false);
+      }
     } else {
       products.updateProduct(product);
     }
