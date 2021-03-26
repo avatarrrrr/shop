@@ -73,11 +73,20 @@ class Products with ChangeNotifier {
   }
 
   ///Atualiza um produto
-  void updateProduct(Product product) {
+  Future<void> updateProduct(Product product) async {
     if (product == null || product.id == null) return;
     final index =
         _items.indexWhere((productItem) => productItem.id == product.id);
     if (index >= 0) {
+      await http.patch(
+        Uri.parse('$_baseUrl/${product.id}.json'),
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'price': product.price,
+          'imageUrl': product.imageUrl,
+        }),
+      );
       _items[index] = product;
       notifyListeners();
     }
