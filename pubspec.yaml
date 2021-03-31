@@ -31,7 +31,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   effective_dart: ^1.2.0
+  flutter_launcher_icons: ^0.9.0
 
+#Change icon of application
+flutter_icons:
+  image_path: "assets/app_icon.png"
+  android: true
+  ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
