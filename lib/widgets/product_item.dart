@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../exceptions/http_exception.dart';
 import '../providers/product.dart';
 import '../providers/products.dart';
 import '../utils/app_routes.dart';
@@ -14,6 +15,7 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaffoldMessenfer = ScaffoldMessenger.of(context);
     return ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(product.imageUrl),
@@ -40,19 +42,26 @@ class ProductItem extends StatelessWidget {
                   title: Text('Tem certeza?'),
                   actions: [
                     TextButton(
-                      onPressed: () {
-                        context.read<Products>().deleteProduct(product.id);
-                        Navigator.of(context).pop();
-                      },
+                      onPressed: () => Navigator.of(context).pop(true),
                       child: Text('Sim'),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () => Navigator.of(context).pop(false),
                       child: Text('Não'),
                     )
                   ],
                 ),
-              ),
+              ).then((value) async {
+                if (value) {
+                  try {
+                    await context.read<Products>().deleteProduct(product.id);
+                  } on HttpException catch (error) {
+                    scaffoldMessenfer.showSnackBar(
+                      SnackBar(content: Text(error.toString())),
+                    );
+                  }
+                }
+              }),
             ),
           ],
         ),
