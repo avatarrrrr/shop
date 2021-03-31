@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import '../exceptions/http_exception.dart';
 
 ///Model que representa um produto
 // ignore: prefer_mixin
@@ -32,8 +36,20 @@ class Product with ChangeNotifier {
   });
 
   ///Inverte o valor do booleano isFavorite e notifca os observers
-  void toggleFavorite() {
+  Future<void> toggleFavorite() async {
     isFavorite = !isFavorite;
     notifyListeners();
+    final response = await http.patch(
+      Uri.parse(
+          'https://shop-project-9673b-default-rtdb.firebaseio.com/products/$id.json'),
+      body: json.encode({
+        'isFavorite': isFavorite,
+      }),
+    );
+    if (response.statusCode >= 400) {
+      isFavorite = !isFavorite;
+      notifyListeners();
+      throw HttpException('Houve um erro ao favoritar este produto!');
+    }
   }
 }
