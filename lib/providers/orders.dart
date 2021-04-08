@@ -31,7 +31,7 @@ class Order {
 class Orders with ChangeNotifier {
   final _baseUrl = Uri.parse(
       'https://shop-project-9673b-default-rtdb.firebaseio.com/orders');
-  final List<Order> _items = [];
+  List<Order> _items = [];
 
   ///Obtém uma cópia dos pedidos armazenados
   List<Order> get items => [..._items];
@@ -71,5 +71,37 @@ class Orders with ChangeNotifier {
       ),
     );
     notifyListeners();
+  }
+
+  ///Carrega os pedidos que estão no banco de dados
+  Future<void> loadOrders() async {
+    final response = await http.get(Uri.parse('$_baseUrl.json'));
+    Map<String, dynamic> data = json.decode(response.body);
+    _items.clear();
+    if (data != null) {
+      data.forEach(
+        (orderId, orderData) => _items.add(
+          Order(
+            id: orderId,
+            total: orderData['total'],
+            date: DateTime.parse(orderData['date']),
+            products: (orderData['products'] as List<dynamic>)
+                .map(
+                  (item) => CartItem(
+                    id: item['id'],
+                    productID: item['productID'],
+                    title: item['title'],
+                    quantity: item['quantity'],
+                    price: item['price'],
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      );
+      notifyListeners();
+    }
+    _items = _items.reversed.toList();
+    return Future.value();
   }
 }
