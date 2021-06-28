@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:shop/utils/constants.dart';
+import '../utils/constants.dart';
 import 'cart.dart';
 
 ///Define um pedido composto por um ou mais produtos

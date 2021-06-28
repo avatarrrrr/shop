@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:shop/utils/constants.dart';
+
 import '../exceptions/http_exception.dart';
+import '../utils/constants.dart';
 
 ///Model que representa um produto
 // ignore: prefer_mixin
