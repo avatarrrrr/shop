@@ -5,40 +5,32 @@ import '../widgets/app_drawer.dart';
 import '../widgets/order_widget.dart';
 
 ///Tela de pedidos
-class OrdersScreen extends StatefulWidget {
-  @override
-  _OrdersScreenState createState() => _OrdersScreenState();
-}
-
-class _OrdersScreenState extends State<OrdersScreen> {
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    context
-        .read<Orders>()
-        .loadOrders()
-        .then((_) => setState(() => _isLoading = false));
-    super.initState();
-  }
-
+class OrdersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var orders = Provider.of<Orders>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Meus Pedidos'),
       ),
       drawer: AppDrawer(),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: () => context.read<Orders>().loadOrders(),
-              child: ListView.builder(
-                itemCount: orders.itemsCount,
-                itemBuilder: (ctx, index) => OrderWidget(orders.items[index]),
+      body: FutureBuilder(
+        future: context.read<Orders>().loadOrders(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            return Consumer<Orders>(
+              builder: (context, orders, child) => RefreshIndicator(
+                onRefresh: () => context.read<Orders>().loadOrders(),
+                child: ListView.builder(
+                  itemCount: orders.itemsCount,
+                  itemBuilder: (ctx, index) => OrderWidget(orders.items[index]),
+                ),
               ),
-            ),
+            );
+          }
+        },
+      ),
     );
   }
 }
