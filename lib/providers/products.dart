@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop/utils/constants.dart';
 import '../exceptions/http_exception.dart';
 import 'product.dart';
 
@@ -9,7 +10,7 @@ import 'product.dart';
 // ignore: prefer_mixin
 class Products with ChangeNotifier {
   final _baseUrl = Uri.parse(
-      'https://shop-project-9673b-default-rtdb.firebaseio.com/products');
+      '${Constants.baseApiURL}/products');
   final List<Product> _items = [];
 
   ///Retorna uma cópia da lista de produtos

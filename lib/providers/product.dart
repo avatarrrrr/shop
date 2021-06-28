@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop/utils/constants.dart';
 import '../exceptions/http_exception.dart';
 
 ///Model que representa um produto
@@ -41,7 +42,7 @@ class Product with ChangeNotifier {
     notifyListeners();
     final response = await http.patch(
       Uri.parse(
-          'https://shop-project-9673b-default-rtdb.firebaseio.com/products/$id.json'),
+          '${Constants.baseApiURL}/products/$id.json'),
       body: json.encode({
         'isFavorite': isFavorite,
       }),

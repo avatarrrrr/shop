@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop/utils/constants.dart';
 import 'cart.dart';
 
 ///Define um pedido composto por um ou mais produtos
@@ -30,7 +31,7 @@ class Order {
 // ignore: prefer_mixin
 class Orders with ChangeNotifier {
   final _baseUrl = Uri.parse(
-      'https://shop-project-9673b-default-rtdb.firebaseio.com/orders');
+      '${Constants.baseApiURL}/orders');
   List<Order> _items = [];
 
   ///Obtém uma cópia dos pedidos armazenados
