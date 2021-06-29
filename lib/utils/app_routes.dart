@@ -1,7 +1,10 @@
 ///Rotas de tela do app
 class AppRoutes {
-  ///Tela Principal
-  static const home = '/';
+  ///Rota de autenticação
+  static const auth = '/';
+
+  ///Rota home com a listagem dos produtos disponíveis
+  static const home = '/home';
 
   ///Rota para a tela de detalhes do produto
   static const productDetail = '/product-detail';
