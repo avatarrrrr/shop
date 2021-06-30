@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop/providers/auth.dart';
+
+import '../providers/auth.dart';
 
 ///Controla se o card vai possuir a estrutura pra fazer um cadastro ou registro.
 enum AuthMode {
