@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/providers/auth.dart';
 
 ///Controla se o card vai possuir a estrutura pra fazer um cadastro ou registro.
 enum AuthMode {
@@ -67,7 +69,7 @@ class _AuthCardState extends State<AuthCard> {
                     return null;
                   }
                 },
-                onSaved: (value) => _authData['Password'] = value,
+                onSaved: (value) => _authData['password'] = value,
               ),
               if (_authMode == AuthMode.register)
                 TextFormField(
@@ -132,10 +134,13 @@ Alternar para ${_authMode == AuthMode.login ? 'registro' : 'login'}""",
     }
     setState(() => isLoading = true);
     _form.currentState.save();
+
+    var auth = context.read<Auth>();
+
     if (_authMode == AuthMode.login) {
       //TODO: Implements Login
     } else {
-      //TODO: Implements Register
+      auth.register(_authData["email"], _authData["password"]);
     }
     setState(() => isLoading = false);
   }
