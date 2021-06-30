@@ -134,15 +134,17 @@ Alternar para ${_authMode == AuthMode.login ? 'registro' : 'login'}""",
       return;
     }
     setState(() => isLoading = true);
+
     _form.currentState.save();
 
     var auth = context.read<Auth>();
 
     if (_authMode == AuthMode.login) {
-      //TODO: Implements Login
+      auth.login(_authData["email"], _authData["password"]);
     } else {
       auth.register(_authData["email"], _authData["password"]);
     }
+
     setState(() => isLoading = false);
   }
 
