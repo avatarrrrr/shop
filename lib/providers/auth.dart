@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop/exceptions/auth_exception.dart';
 
 ///Responsável pela autenticação do usuário junto ao Firebase.
 class Auth extends ChangeNotifier {
@@ -19,8 +20,14 @@ class Auth extends ChangeNotifier {
         "returnSecureToken": true,
       }),
     );
-    print(json.decode(response.body));
 
+    var responseBody = json.decode(response.body);
+
+    if (responseBody['error'] != null) {
+      throw AuthException(
+        responseBody['error']['message'].split(':').first.replaceAll(' ', ''),
+      );
+    }
     return Future.value();
   }
 

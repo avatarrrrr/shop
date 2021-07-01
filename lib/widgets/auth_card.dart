@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/exceptions/auth_exception.dart';
 
 import '../providers/auth.dart';
 
@@ -129,7 +130,7 @@ Alternar para ${_authMode == AuthMode.login ? 'registro' : 'login'}""",
     );
   }
 
-  void _submit() {
+  void _submit() async {
     if (!_form.currentState.validate()) {
       return;
     }
@@ -139,10 +140,16 @@ Alternar para ${_authMode == AuthMode.login ? 'registro' : 'login'}""",
 
     var auth = context.read<Auth>();
 
-    if (_authMode == AuthMode.login) {
-      auth.login(_authData["email"], _authData["password"]);
-    } else {
-      auth.register(_authData["email"], _authData["password"]);
+    try {
+      if (_authMode == AuthMode.login) {
+        await auth.login(_authData["email"], _authData["password"]);
+      } else {
+        await auth.register(_authData["email"], _authData["password"]);
+      }
+    } on AuthException catch (error) {
+      _showErrorDiolog(error.toString());
+    } on Exception catch (_) {
+      _showErrorDiolog("There a error!");
     }
 
     setState(() => isLoading = false);
@@ -155,5 +162,11 @@ Alternar para ${_authMode == AuthMode.login ? 'registro' : 'login'}""",
       _authMode = AuthMode.login;
     }
     setState(() => _authMode);
+  }
+
+  void _showErrorDiolog(String message) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 }
