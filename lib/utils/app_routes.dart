@@ -1,7 +1,10 @@
 ///Rotas de tela do app
 class AppRoutes {
+  ///Rota de decisão de o usuário vai pra autenticação ou para o home;
+  static const authOrHome = '/';
+
   ///Rota de autenticação
-  static const auth = '/';
+  static const auth = '/auth';
 
   ///Rota home com a listagem dos produtos disponíveis
   static const home = '/home';

@@ -3,10 +3,32 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:shop/exceptions/auth_exception.dart';
+
+import '../exceptions/auth_exception.dart';
 
 ///Responsável pela autenticação do usuário junto ao Firebase.
 class Auth extends ChangeNotifier {
+  String _token;
+  DateTime _expiryDate;
+
+  ///Retorna se o token do usuário ainda é válido ou não.
+  bool get isAuth {
+    return token != null;
+  }
+
+  ///Retorna o token do usuário, se não possuir ou tiver expirado retorna null.
+  String get token {
+    if (_token != null &&
+        _expiryDate != null &&
+        _expiryDate.isAfter(
+          DateTime.now(),
+        )) {
+      return _token;
+    } else {
+      return null;
+    }
+  }
+
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {
     final url = Uri.parse(
@@ -27,6 +49,16 @@ class Auth extends ChangeNotifier {
       throw AuthException(
         responseBody['error']['message'].split(':').first.replaceAll(' ', ''),
       );
+    } else {
+      _token = responseBody['idToken'];
+      _expiryDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(
+            responseBody['expiresIn'],
+          ),
+        ),
+      );
+      notifyListeners();
     }
     return Future.value();
   }
