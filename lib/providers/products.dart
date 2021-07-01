@@ -10,9 +10,12 @@ import 'product.dart';
 ///Classe que encapsulará a lista de produtos
 // ignore: prefer_mixin
 class Products with ChangeNotifier {
-  final _baseUrl = Uri.parse(
-      '${Constants.baseApiURL}/products');
-  final List<Product> _items = [];
+  final _baseUrl = Uri.parse('${Constants.baseApiURL}/products');
+  final List<Product> _items;
+  final String _token;
+
+  ///Recebe o um token para fazer as requisições ao banco, como também os itens.
+  Products(this._token, this._items);
 
   ///Retorna uma cópia da lista de produtos
   List<Product> get items {
@@ -29,7 +32,7 @@ class Products with ChangeNotifier {
 
   ///Carrega os produtos que estão no banco de dados
   Future<void> loadProducts() async {
-    final response = await http.get(Uri.parse('$_baseUrl.json'));
+    final response = await http.get(Uri.parse('$_baseUrl.json?auth=$_token'));
     Map<String, dynamic> data = json.decode(response.body);
     _items.clear();
     if (data != null) {
