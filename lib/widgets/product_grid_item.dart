@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../exceptions/http_exception.dart';
+import '../providers/auth.dart';
 import '../providers/cart.dart';
 import '../providers/product.dart';
 import '../utils/app_routes.dart';
@@ -38,7 +39,7 @@ class ProductGridItem extends StatelessWidget {
               color: Theme.of(context).accentColor,
               onPressed: () async {
                 try {
-                  await product.toggleFavorite();
+                  await product.toggleFavorite(context.read<Auth>().token);
                 } on HttpException catch (error) {
                   scaffoldMessenger.showSnackBar(
                     SnackBar(content: Text(error.toString())),

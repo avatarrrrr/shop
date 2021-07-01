@@ -7,8 +7,7 @@ import '../exceptions/http_exception.dart';
 import '../utils/constants.dart';
 
 ///Model que representa um produto
-// ignore: prefer_mixin
-class Product with ChangeNotifier {
+class Product extends ChangeNotifier {
   ///Identificador do produto
   final String id;
 
@@ -38,12 +37,11 @@ class Product with ChangeNotifier {
   });
 
   ///Inverte o valor do booleano isFavorite e notifca os observers
-  Future<void> toggleFavorite() async {
+  Future<void> toggleFavorite(String token) async {
     isFavorite = !isFavorite;
     notifyListeners();
     final response = await http.patch(
-      Uri.parse(
-          '${Constants.baseApiURL}/products/$id.json'),
+      Uri.parse('${Constants.baseApiURL}/products/$id.json?auth=$token'),
       body: json.encode({
         'isFavorite': isFavorite,
       }),
