@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
+import '../data/store.dart';
 import '../exceptions/auth_exception.dart';
 
 ///Responsável pela autenticação do usuário junto ao Firebase.
@@ -67,6 +68,13 @@ class Auth extends ChangeNotifier {
           ),
         ),
       );
+
+      Store.saveMap('userData', {
+        'token': _token,
+        'userID': _userID,
+        'expiryDate': _expiryDate.toIso8601String(),
+      });
+
       _autoLogout();
       notifyListeners();
     }
@@ -83,6 +91,33 @@ class Auth extends ChangeNotifier {
     await _authenticate(email, password, 'signInWithPassword');
   }
 
+  ///Tenta realizar o login a partir dos dados no armazenamento local.
+  Future<void> tryAutoLogin() async {
+    if (isAuth) {
+      return Future.value();
+    } else {
+      final userData = await Store.readMap('userData');
+
+      if (userData == null) {
+        return Future.value();
+      } else {
+        final expiryDate = DateTime.parse(userData['expiryDate']);
+
+        if (expiryDate.isBefore(DateTime.now())) {
+          return Future.value();
+        } else {
+          _userID = userData['userID'];
+          _token = userData['token'];
+          _expiryDate = expiryDate;
+
+          _autoLogout();
+          notifyListeners();
+          return Future.value();
+        }
+      }
+    }
+  }
+
   ///Realiza a saída do usuário no sistema;
   void logout() {
     _token = null;
@@ -92,6 +127,7 @@ class Auth extends ChangeNotifier {
       _logoutTimer.cancel();
       _logoutTimer = null;
     }
+    Store.remove('userData');
     notifyListeners();
   }
 

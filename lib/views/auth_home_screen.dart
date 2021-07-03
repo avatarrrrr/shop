@@ -11,11 +11,24 @@ class AuthOrHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<Auth>(
       builder: (context, auth, child) {
-        if (auth.isAuth) {
-          return ProductOverviewScreen();
-        } else {
-          return AuthScreen();
-        }
+        return FutureBuilder(
+          future: auth.tryAutoLogin(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            } else {
+              if (auth.isAuth) {
+                return ProductOverviewScreen();
+              } else {
+                return AuthScreen();
+              }
+            }
+          },
+        );
       },
     );
   }
