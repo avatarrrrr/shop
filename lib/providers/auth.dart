@@ -8,12 +8,18 @@ import '../exceptions/auth_exception.dart';
 
 ///Responsável pela autenticação do usuário junto ao Firebase.
 class Auth extends ChangeNotifier {
+  String _userID;
   String _token;
   DateTime _expiryDate;
 
   ///Retorna se o token do usuário ainda é válido ou não.
   bool get isAuth {
     return token != null;
+  }
+
+  ///Retona UID do usuário no banco de dados.
+  String get userID {
+    return isAuth ? _userID : null;
   }
 
   ///Retorna o token do usuário, se não possuir ou tiver expirado retorna null.
@@ -51,6 +57,7 @@ class Auth extends ChangeNotifier {
       );
     } else {
       _token = responseBody['idToken'];
+      _userID = responseBody['localId'];
       _expiryDate = DateTime.now().add(
         Duration(
           seconds: int.parse(

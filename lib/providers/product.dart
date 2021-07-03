@@ -37,14 +37,13 @@ class Product extends ChangeNotifier {
   });
 
   ///Inverte o valor do booleano isFavorite e notifca os observers
-  Future<void> toggleFavorite(String token) async {
+  Future<void> toggleFavorite(String token, String userID) async {
     isFavorite = !isFavorite;
     notifyListeners();
-    final response = await http.patch(
-      Uri.parse('${Constants.baseApiURL}/products/$id.json?auth=$token'),
-      body: json.encode({
-        'isFavorite': isFavorite,
-      }),
+    final response = await http.put(
+      Uri.parse(
+          '${Constants.baseApiURL}/userFavorites/$userID/$id.json?auth=$token'),
+      body: json.encode(isFavorite),
     );
     if (response.statusCode >= 400) {
       isFavorite = !isFavorite;

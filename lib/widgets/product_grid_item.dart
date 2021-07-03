@@ -35,11 +35,13 @@ class ProductGridItem extends StatelessWidget {
           leading: Consumer<Product>(
             builder: (context, product, _) => IconButton(
               icon: Icon(
-                  product.isFavorite ? Icons.favorite : Icons.favorite_border),
+                product.isFavorite ? Icons.favorite : Icons.favorite_border,
+              ),
               color: Theme.of(context).accentColor,
               onPressed: () async {
                 try {
-                  await product.toggleFavorite(context.read<Auth>().token);
+                  var auth = context.read<Auth>();
+                  await product.toggleFavorite(auth.token, auth.userID);
                 } on HttpException catch (error) {
                   scaffoldMessenger.showSnackBar(
                     SnackBar(content: Text(error.toString())),

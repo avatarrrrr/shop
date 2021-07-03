@@ -13,9 +13,10 @@ class Products with ChangeNotifier {
   final _baseUrl = Uri.parse('${Constants.baseApiURL}/products');
   final List<Product> _items;
   final String _token;
+  final String _userID;
 
   ///Recebe o um token para fazer as requisições ao banco, como também os itens.
-  Products(this._token, this._items);
+  Products(this._token, this._userID, this._items);
 
   ///Retorna uma cópia da lista de produtos
   List<Product> get items {
@@ -32,11 +33,18 @@ class Products with ChangeNotifier {
 
   ///Carrega os produtos que estão no banco de dados
   Future<void> loadProducts() async {
-    final response = await http.get(Uri.parse('$_baseUrl.json?auth=$_token'));
-    Map<String, dynamic> data = json.decode(response.body);
+    final loadProductsResponse =
+        await http.get(Uri.parse('$_baseUrl.json?auth=$_token'));
+    final favoritesResponse = await http.get(Uri.parse(
+        '${Constants.baseApiURL}/userFavorites/$_userID.json?auth=$_token'));
+
+    final loadProductsData = json.decode(loadProductsResponse.body);
+    final favoritesData = json.decode(favoritesResponse.body);
+
     _items.clear();
-    if (data != null) {
-      data.forEach(
+
+    if (loadProductsData != null) {
+      loadProductsData.forEach(
         (productId, productData) => _items.add(
           Product(
             id: productId,
@@ -44,7 +52,9 @@ class Products with ChangeNotifier {
             description: productData['description'],
             price: productData['price'],
             imageUrl: productData['imageUrl'],
-            isFavorite: productData['isFavorite'],
+            isFavorite: favoritesData == null
+                ? false
+                : favoritesData[productId] ?? false,
           ),
         ),
       );
@@ -91,7 +101,6 @@ class Products with ChangeNotifier {
           'description': product.description,
           'price': product.price,
           'imageUrl': product.imageUrl,
-          'isFavorite': product.isFavorite,
         }),
       );
       _items[index] = product;
