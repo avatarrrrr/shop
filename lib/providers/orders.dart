@@ -31,10 +31,12 @@ class Order {
 class Orders extends ChangeNotifier {
   final _baseUrl = Uri.parse('${Constants.baseApiURL}/orders');
   final String _token;
+  final String _userID;
+
   List<Order> _items;
 
   ///Recebe token pra fazer as alterações no banco, também uma lista de order.
-  Orders(this._token, this._items);
+  Orders(this._token, this._userID, this._items);
 
   ///Obtém uma cópia dos pedidos armazenados
   List<Order> get items => [..._items];
@@ -46,7 +48,7 @@ class Orders extends ChangeNotifier {
   Future<void> addOrder(Cart cart) async {
     final date = DateTime.now();
     final response = await http.post(
-      Uri.parse('${_baseUrl.toString()}.json?auth=$_token'),
+      Uri.parse('${_baseUrl.toString()}/$_userID.json?auth=$_token'),
       body: json.encode(
         {
           'total': cart.totalAmount,
@@ -78,7 +80,8 @@ class Orders extends ChangeNotifier {
 
   ///Carrega os pedidos que estão no banco de dados
   Future<void> loadOrders() async {
-    final response = await http.get(Uri.parse('$_baseUrl.json?auth=$_token'));
+    final response =
+        await http.get(Uri.parse('$_baseUrl/$_userID.json?auth=$_token'));
     Map<String, dynamic> data = json.decode(response.body);
     _items.clear();
     if (data != null) {
