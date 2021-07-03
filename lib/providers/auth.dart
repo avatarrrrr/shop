@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
@@ -11,6 +12,7 @@ class Auth extends ChangeNotifier {
   String _userID;
   String _token;
   DateTime _expiryDate;
+  Timer _logoutTimer;
 
   ///Retorna se o token do usuário ainda é válido ou não.
   bool get isAuth {
@@ -65,6 +67,7 @@ class Auth extends ChangeNotifier {
           ),
         ),
       );
+      _autoLogout();
       notifyListeners();
     }
     return Future.value();
@@ -85,6 +88,23 @@ class Auth extends ChangeNotifier {
     _token = null;
     _expiryDate = null;
     _userID = null;
+    if (_logoutTimer != null) {
+      _logoutTimer.cancel();
+      _logoutTimer = null;
+    }
     notifyListeners();
+  }
+
+  void _autoLogout() {
+    if (_logoutTimer != null) {
+      _logoutTimer.cancel();
+    }
+
+    final timeToLogout = _expiryDate.difference(DateTime.now()).inSeconds;
+
+    _logoutTimer = Timer(
+      Duration(seconds: timeToLogout),
+      logout,
+    );
   }
 }
