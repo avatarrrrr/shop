@@ -57,12 +57,20 @@ class MyApp extends StatelessWidget {
         routes: {
           AppRoutes.authOrHome: (context) => AuthOrHome(),
           AppRoutes.auth: (context) => AuthScreen(),
-          AppRoutes.home: (context) => ProductOverviewScreen(),
-          AppRoutes.productDetail: (context) => ProductDetailScreen(),
-          AppRoutes.cart: (context) => CartScreen(),
-          AppRoutes.orders: (context) => OrdersScreen(),
-          AppRoutes.products: (context) => ProductsScreen(),
-          AppRoutes.productForm: (context) => ProductFormScreen(),
+          AppRoutes.home: (context) => context.read<Auth>().isAuth
+              ? ProductOverviewScreen()
+              : AuthScreen(),
+          AppRoutes.productDetail: (context) => context.read<Auth>().isAuth
+              ? ProductDetailScreen()
+              : AuthScreen(),
+          AppRoutes.cart: (context) =>
+              context.read<Auth>().isAuth ? CartScreen() : AuthScreen(),
+          AppRoutes.orders: (context) =>
+              context.read<Auth>().isAuth ? OrdersScreen() : AuthScreen(),
+          AppRoutes.products: (context) =>
+              context.read<Auth>().isAuth ? ProductsScreen() : AuthScreen(),
+          AppRoutes.productForm: (context) =>
+              context.read<Auth>().isAuth ? ProductFormScreen() : AuthScreen(),
         },
       ),
     );
