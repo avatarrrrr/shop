@@ -8,7 +8,9 @@
 ![Bitbucket open issues](https://img.shields.io/bitbucket/issues/avatarrrrr/shop?style=for-the-badge)
 ![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr-raw/avatarrrrr/shop?style=for-the-badge)
 
-<img src="assets/demo.gif" width="384" height="640" />
+<p align='center'>
+  <img src="assets/demo.gif" width="384" height="640" />
+</p>
 
 > E-commerce, você poderá adicionar produtos, edita-los, como também comprá-los, tudo isso a partir do seu usuário.
 
@@ -20,9 +22,9 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 * Você tem uma máquina Windows/Linux/Mac.
 * Possui uma boa base em Flutter e Dart.
 
-## 🚀 Instalando <nome_do_projeto>
+## 🚀 Instalando shop
 
-Para instalar o <nome_do_projeto>, siga estas etapas:
+Para instalar o shop, siga estas etapas:
 
 ```
 git clone https://github.com/avatarrrrr/shop.git
@@ -34,4 +36,4 @@ flutter run
 
 ## 📝 Licença
 
-Esse projeto está sob licença. Veja o arquivo [LICENÇA](LICENSE.md) para mais detalhes.
+Esse projeto está sob a licença MIt. Veja o arquivo [LICENÇA](LICENSE) para mais detalhes.
