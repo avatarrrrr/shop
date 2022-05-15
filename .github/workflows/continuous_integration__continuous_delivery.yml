@@ -1,0 +1,37 @@
+# This is a basic workflow to help you get started with Actions
+name: Continuous integration
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: [main]
+      # Triggers the workflow on push or pull request events but only for the main branch
+  pull_request:
+    branches: [main]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+  # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "test"
+  test:
+    name: Flutter Test
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout to repository...
+      - uses: actions/setup-java@v1
+        name: Setup Java..
+        with:
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v1
+        name: Setup Flutter...
+        with:
+          channel: stable
+      - run: |
+          flutter pub get
+          flutter analyze
+          flutter test
+        name: Flutter test...
