@@ -34,6 +34,11 @@ cd shop
 flutter run
 ```
 
+### Login Padrão
+
+Email: teste@teste.com
+Senha: teste123
+
 ## 📝 Licença
 
 Esse projeto está sob a licença MIt. Veja o arquivo [LICENÇA](LICENSE) para mais detalhes.
