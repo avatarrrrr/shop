@@ -29,7 +29,7 @@ class ProductsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           child: ListView.builder(
             itemCount: products.itemsCount,
-            itemBuilder: (context, [index]) => Column(
+            itemBuilder: (context, index) => Column(
               children: [
                 ProductItem(productsItems[index]),
                 Divider(),
