@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,15 +17,15 @@ class Store {
       saveString(key, json.encode(value));
 
   ///Lê uma string no armazenamento local.
-  static Future<String> readString(String key) async {
+  static Future<String?> readString(String key) async {
     var storage = await SharedPreferences.getInstance();
 
     return storage.getString(key);
   }
 
   ///Lê um map no armazenamento local.
-  static Future<Map<String, dynamic>> readMap(String key) async {
-    var dataInJson = await readString(key);
+  static Future<Map<String, dynamic>?> readMap(String key) async {
+    var dataInJson = await (readString(key) as FutureOr<String>);
     return json.decode(dataInJson);
   }
 

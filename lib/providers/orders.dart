@@ -7,16 +7,16 @@ import 'cart.dart';
 ///Define um pedido composto por um ou mais produtos
 class Order {
   ///Id do pedido
-  final String id;
+  final String? id;
 
   ///Valor total do pedido
-  final double total;
+  final double? total;
 
   ///Produtos comprados
-  final List<CartItem> products;
+  final List<CartItem>? products;
 
   ///Data em que o pedido foi feito
-  final DateTime date;
+  final DateTime? date;
 
   ///Obtém o id, o total dos produtos, a data e os produtos de um pedido
   Order({
@@ -30,8 +30,8 @@ class Order {
 ///Agrupa todos os pedidos feitos, você só poderá criar um pedido através dele
 class Orders extends ChangeNotifier {
   final _baseUrl = Uri.parse('${Constants.baseApiURL}/orders');
-  final String _token;
-  final String _userID;
+  final String? _token;
+  final String? _userID;
 
   List<Order> _items;
 
@@ -82,7 +82,7 @@ class Orders extends ChangeNotifier {
   Future<void> loadOrders() async {
     final response =
         await http.get(Uri.parse('$_baseUrl/$_userID.json?auth=$_token'));
-    Map<String, dynamic> data = json.decode(response.body);
+    Map<String, dynamic>? data = json.decode(response.body);
     _items.clear();
     if (data != null) {
       data.forEach(

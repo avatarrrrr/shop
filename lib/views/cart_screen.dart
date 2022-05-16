@@ -36,7 +36,7 @@ class CartScreen extends StatelessWidget {
                       'R\$ ${cart.totalAmount}',
                       style: TextStyle(
                         color:
-                            Theme.of(context).primaryTextTheme.headline6.color,
+                            Theme.of(context).primaryTextTheme.headline6!.color,
                       ),
                     ),
                     backgroundColor: Theme.of(context).primaryColor,
@@ -66,8 +66,8 @@ class CartScreen extends StatelessWidget {
 class OrderButton extends StatefulWidget {
   ///Recebe o carrinho como parametro;
   const OrderButton({
-    Key key,
-    @required this.cart,
+    Key? key,
+    required this.cart,
   }) : super(key: key);
 
   ///Carrinho com os itens do pedido

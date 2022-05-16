@@ -11,7 +11,7 @@ class AuthException implements Exception {
     'INVALID_PASSWORD': 'Senha inválida.',
     'USER_DISABLED': 'Usuário desativado.',
   };
-  final String _key;
+  final String? _key;
 
   ///A messagem será apresentada através do construtor
   const AuthException(this._key);
@@ -19,7 +19,7 @@ class AuthException implements Exception {
   @override
   String toString() {
     if (_erros.containsKey(_key)) {
-      return _erros[_key];
+      return _erros[_key!]!;
     } else {
       return 'There a error!';
     }

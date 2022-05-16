@@ -15,7 +15,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   final _imageUrlFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
   final _form = GlobalKey<FormState>();
-  final _formData = <String, Object>{};
+  final _formData = <String, Object?>{};
   bool _isLoading = false;
 
   @override
@@ -28,14 +28,14 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_formData.isEmpty) {
-      final product = ModalRoute.of(context).settings.arguments as Product;
+      final product = ModalRoute.of(context)!.settings.arguments as Product?;
       if (product != null) {
         _formData['id'] = product.id;
         _formData['title'] = product.title;
         _formData['price'] = product.price;
         _formData['description'] = product.description;
         _formData['imageUrl'] = product.imageUrl;
-        _imageUrlController.text = product.imageUrl;
+        _imageUrlController.text = product.imageUrl!;
       }
     }
   }
@@ -54,7 +54,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _formData['title'] == null ? 'Novo produto' : _formData['title'],
+          _formData['title'] == null ? 'Novo produto' : _formData['title'] as String,
         ),
         actions: [
           IconButton(
@@ -74,7 +74,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 child: ListView(
                   children: [
                     TextFormField(
-                      initialValue: _formData['title'],
+                      initialValue: _formData['title'] as String?,
                       decoration: InputDecoration(
                         labelText: 'Título',
                       ),
@@ -83,7 +83,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                           FocusScope.of(context).requestFocus(_priceFocusNode),
                       onSaved: (value) => _formData['title'] = value,
                       validator: (value) {
-                        if (value.isEmpty || value.trim().isEmpty) {
+                        if (value!.isEmpty || value.trim().isEmpty) {
                           return 'Título inválido!';
                         } else if (value.trim().length < 5) {
                           return 'O título deve ter pelo menos 5 letras!';
@@ -105,13 +105,13 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                       ),
                       textInputAction: TextInputAction.next,
                       onSaved: (value) =>
-                          _formData['price'] = double.parse(value),
+                          _formData['price'] = double.parse(value!),
                       onFieldSubmitted: (_) => FocusScope.of(context)
                           .requestFocus(_descriptionFocusNode),
                       validator: (value) {
-                        if (value.isEmpty ||
+                        if (value!.isEmpty ||
                             double.tryParse(value) == null ||
-                            double.tryParse(value) < 0) {
+                            double.tryParse(value)! < 0) {
                           return 'Preço inválido!';
                         } else {
                           return null;
@@ -119,7 +119,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                       },
                     ),
                     TextFormField(
-                      initialValue: _formData['description'],
+                      initialValue: _formData['description'] as String?,
                       maxLines: 3,
                       focusNode: _descriptionFocusNode,
                       keyboardType: TextInputType.multiline,
@@ -128,7 +128,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                       ),
                       onSaved: (value) => _formData['description'] = value,
                       validator: (value) {
-                        if (value.isEmpty || value.trim().isEmpty) {
+                        if (value!.isEmpty || value.trim().isEmpty) {
                           return 'Descrição inválida!';
                         } else if (value.trim().length < 10) {
                           return 'A descrição deve ter pelo menos 10 letras!';
@@ -152,7 +152,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                             onFieldSubmitted: (_) => saveForm(),
                             onSaved: (value) => _formData['imageUrl'] = value,
                             validator: (value) {
-                              if (value.isEmpty ||
+                              if (value!.isEmpty ||
                                   value.trim().isEmpty ||
                                   !isValidImageUrl(value)) {
                                 return 'URL inválida!';
@@ -209,7 +209,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   }
 
   Future<void> saveForm() async {
-    if (!_form.currentState.validate()) {
+    if (!_form.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -219,13 +219,13 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       );
       return;
     }
-    _form.currentState.save();
+    _form.currentState!.save();
     final product = Product(
-      id: _formData['id'],
-      title: _formData['title'],
-      description: _formData['description'],
-      price: _formData['price'],
-      imageUrl: _formData['imageUrl'],
+      id: _formData['id'] as String?,
+      title: _formData['title'] as String?,
+      description: _formData['description'] as String?,
+      price: _formData['price'] as double?,
+      imageUrl: _formData['imageUrl'] as String?,
     );
 
     setState(() => _isLoading = true);

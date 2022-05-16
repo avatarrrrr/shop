@@ -12,8 +12,8 @@ import 'product.dart';
 class Products with ChangeNotifier {
   final _baseUrl = Uri.parse('${Constants.baseApiURL}/products');
   final List<Product> _items;
-  final String _token;
-  final String _userID;
+  final String? _token;
+  final String? _userID;
 
   ///Recebe o um token para fazer as requisições ao banco, como também os itens.
   Products(this._token, this._userID, this._items);
@@ -109,7 +109,7 @@ class Products with ChangeNotifier {
   }
 
   ///Remove um produto
-  Future<void> deleteProduct(String id) async {
+  Future<void> deleteProduct(String? id) async {
     final index = _items.indexWhere((product) => product.id == id);
     if (index >= 0) {
       final product = _items[index];

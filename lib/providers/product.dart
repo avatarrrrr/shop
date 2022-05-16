@@ -9,19 +9,19 @@ import '../utils/constants.dart';
 ///Model que representa um produto
 class Product extends ChangeNotifier {
   ///Identificador do produto
-  final String id;
+  final String? id;
 
   ///Título
-  final String title;
+  final String? title;
 
   ///Descrição
-  final String description;
+  final String? description;
 
   ///Preço
-  final double price;
+  final double? price;
 
   ///URL da imagem do produto
-  final String imageUrl;
+  final String? imageUrl;
 
   ///Se o produto foi favoritado
   bool isFavorite;
@@ -29,15 +29,15 @@ class Product extends ChangeNotifier {
   ///Construtor
   Product({
     this.id,
-    @required this.title,
-    @required this.description,
-    @required this.price,
-    @required this.imageUrl,
+    required this.title,
+    required this.description,
+    required this.price,
+    required this.imageUrl,
     this.isFavorite = false,
   });
 
   ///Inverte o valor do booleano isFavorite e notifca os observers
-  Future<void> toggleFavorite(String token, String userID) async {
+  Future<void> toggleFavorite(String? token, String? userID) async {
     isFavorite = !isFavorite;
     notifyListeners();
     final response = await http.put(

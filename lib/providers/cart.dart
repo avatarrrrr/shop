@@ -6,37 +6,37 @@ import 'product.dart';
 ///Classe que representa um item do carrinho
 class CartItem {
   ///ID do produto no carrinho
-  final String id;
+  final String? id;
 
   ///ID do produto
-  final String productID;
+  final String? productID;
 
   ///Nome do produto
-  final String title;
+  final String? title;
 
   ///Quantidade a ser comprada
-  final int quantity;
+  final int? quantity;
 
   ///Preço do produto
-  final double price;
+  final double? price;
 
   ///Construtor que irá pegar essas dados, tudo será requerido
   CartItem({
-    @required this.id,
-    @required this.productID,
-    @required this.title,
-    @required this.quantity,
-    @required this.price,
+    required this.id,
+    required this.productID,
+    required this.title,
+    required this.quantity,
+    required this.price,
   });
 }
 
 ///Classe que representa um carrinho
 // ignore: prefer_mixin
 class Cart with ChangeNotifier {
-  final Map<String, CartItem> _items = {};
+  final Map<String?, CartItem> _items = {};
 
   ///Obtem uma cópia dos items
-  Map<String, CartItem> get items => {..._items};
+  Map<String?, CartItem> get items => {..._items};
 
   ///Retorna a quantidade de items no carrinho
   int get itemsCount => _items.length;
@@ -45,7 +45,7 @@ class Cart with ChangeNotifier {
   double get totalAmount {
     var total = 0.0;
     _items.forEach((key, itemCart) {
-      total += itemCart.price * itemCart.quantity;
+      total += itemCart.price! * itemCart.quantity!;
     });
     return total;
   }
@@ -58,7 +58,7 @@ class Cart with ChangeNotifier {
           id: existingItem.id,
           productID: product.id,
           title: existingItem.title,
-          quantity: existingItem.quantity + 1,
+          quantity: existingItem.quantity! + 1,
           price: existingItem.price,
         );
       });
@@ -78,10 +78,10 @@ class Cart with ChangeNotifier {
   }
 
   ///Remove uma quantidade do produto
-  void removeSingleItem(String productID) {
+  void removeSingleItem(String? productID) {
     if (!_items.containsKey(productID)) {
       return;
-    } else if (_items[productID].quantity == 1) {
+    } else if (_items[productID]!.quantity == 1) {
       removeItem(productID);
     } else {
       _items.update(productID, (existingItem) {
@@ -89,7 +89,7 @@ class Cart with ChangeNotifier {
           id: existingItem.id,
           productID: productID,
           title: existingItem.title,
-          quantity: existingItem.quantity - 1,
+          quantity: existingItem.quantity! - 1,
           price: existingItem.price,
         );
       });
@@ -97,7 +97,7 @@ class Cart with ChangeNotifier {
   }
 
   ///Remove um item do carrinho
-  void removeItem(String productID) {
+  void removeItem(String? productID) {
     _items.remove(productID);
     notifyListeners();
   }

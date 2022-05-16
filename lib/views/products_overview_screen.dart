@@ -42,7 +42,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
         title: Text('Minha Loja'),
         actions: [
           PopupMenuButton(
-            onSelected: (selectedValue) {
+            onSelected: (dynamic selectedValue) {
               setState(() {
                 if (selectedValue == FilterOptions.favorite) {
                   _showFavoriteOnly = true;

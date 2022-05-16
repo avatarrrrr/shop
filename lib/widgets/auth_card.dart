@@ -24,7 +24,7 @@ class _AuthCardState extends State<AuthCard> {
   bool isLoading = false;
   final _form = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
-  final Map<String, String> _authData = {
+  final Map<String, String?> _authData = {
     'email': '',
     'password': '',
   };
@@ -50,7 +50,7 @@ class _AuthCardState extends State<AuthCard> {
                 ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
-                  if (value.isEmpty || !value.contains('@')) {
+                  if (value!.isEmpty || !value.contains('@')) {
                     return 'E-mail inválido!';
                   } else {
                     return null;
@@ -65,7 +65,7 @@ class _AuthCardState extends State<AuthCard> {
                 ),
                 obscureText: true,
                 validator: (value) {
-                  if (value.isEmpty || value.length < 6) {
+                  if (value!.isEmpty || value.length < 6) {
                     return 'Informe uma senha válida!';
                   } else {
                     return null;
@@ -131,12 +131,12 @@ Alternar para ${_authMode == AuthMode.login ? 'registro' : 'login'}""",
   }
 
   void _submit() async {
-    if (!_form.currentState.validate()) {
+    if (!_form.currentState!.validate()) {
       return;
     }
     setState(() => isLoading = true);
 
-    _form.currentState.save();
+    _form.currentState!.save();
 
     var auth = context.read<Auth>();
 

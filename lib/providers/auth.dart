@@ -10,10 +10,10 @@ import '../exceptions/auth_exception.dart';
 
 ///Responsável pela autenticação do usuário junto ao Firebase.
 class Auth extends ChangeNotifier {
-  String _userID;
-  String _token;
-  DateTime _expiryDate;
-  Timer _logoutTimer;
+  String? _userID;
+  String? _token;
+  DateTime? _expiryDate;
+  Timer? _logoutTimer;
 
   ///Retorna se o token do usuário ainda é válido ou não.
   bool get isAuth {
@@ -21,15 +21,15 @@ class Auth extends ChangeNotifier {
   }
 
   ///Retona UID do usuário no banco de dados.
-  String get userID {
+  String? get userID {
     return isAuth ? _userID : null;
   }
 
   ///Retorna o token do usuário, se não possuir ou tiver expirado retorna null.
-  String get token {
+  String? get token {
     if (_token != null &&
         _expiryDate != null &&
-        _expiryDate.isAfter(
+        _expiryDate!.isAfter(
           DateTime.now(),
         )) {
       return _token;
@@ -39,7 +39,7 @@ class Auth extends ChangeNotifier {
   }
 
   Future<void> _authenticate(
-      String email, String password, String urlSegment) async {
+      String? email, String? password, String urlSegment) async {
     final url = Uri.parse(
       "https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=${dotenv.env['GOOGLE_API_KEY']}",
     );
@@ -72,7 +72,7 @@ class Auth extends ChangeNotifier {
       Store.saveMap('userData', {
         'token': _token,
         'userID': _userID,
-        'expiryDate': _expiryDate.toIso8601String(),
+        'expiryDate': _expiryDate!.toIso8601String(),
       });
 
       _autoLogout();
@@ -82,12 +82,12 @@ class Auth extends ChangeNotifier {
   }
 
   ///Realiza um registro de usuário no firebase, deve ser passado email e senha.
-  Future<void> register(String email, String password) async {
+  Future<void> register(String? email, String? password) async {
     return await _authenticate(email, password, 'signUp');
   }
 
   ///Realiza o login de usuário no firebase, requerido email e senha.
-  Future<void> login(String email, String password) async {
+  Future<void> login(String? email, String? password) async {
     await _authenticate(email, password, 'signInWithPassword');
   }
 
@@ -124,7 +124,7 @@ class Auth extends ChangeNotifier {
     _expiryDate = null;
     _userID = null;
     if (_logoutTimer != null) {
-      _logoutTimer.cancel();
+      _logoutTimer!.cancel();
       _logoutTimer = null;
     }
     Store.remove('userData');
@@ -133,10 +133,10 @@ class Auth extends ChangeNotifier {
 
   void _autoLogout() {
     if (_logoutTimer != null) {
-      _logoutTimer.cancel();
+      _logoutTimer!.cancel();
     }
 
-    final timeToLogout = _expiryDate.difference(DateTime.now()).inSeconds;
+    final timeToLogout = _expiryDate!.difference(DateTime.now()).inSeconds;
 
     _logoutTimer = Timer(
       Duration(seconds: timeToLogout),
