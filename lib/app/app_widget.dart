@@ -13,6 +13,7 @@ import 'package:shop/app/views/product_detail_screen.dart';
 import 'package:shop/app/views/product_form_screen.dart';
 import 'package:shop/app/views/products_overview_screen.dart';
 import 'package:shop/app/views/products_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Shop extends StatelessWidget {
   @override
@@ -40,13 +41,15 @@ class Shop extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'Minha Loja',
+        title: 'Avatar Shop',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.purple,
           accentColor: Colors.deepOrange,
           fontFamily: 'Lato',
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         routes: {
           AppRoutes.authOrHome: (context) => AuthOrHome(),
           AppRoutes.auth: (context) => AuthScreen(),
@@ -57,13 +60,13 @@ class Shop extends StatelessWidget {
               ? ProductDetailScreen()
               : AuthScreen(),
           AppRoutes.cart: (context) =>
-          context.read<Auth>().isAuth ? CartScreen() : AuthScreen(),
+              context.read<Auth>().isAuth ? CartScreen() : AuthScreen(),
           AppRoutes.orders: (context) =>
-          context.read<Auth>().isAuth ? OrdersScreen() : AuthScreen(),
+              context.read<Auth>().isAuth ? OrdersScreen() : AuthScreen(),
           AppRoutes.products: (context) =>
-          context.read<Auth>().isAuth ? ProductsScreen() : AuthScreen(),
+              context.read<Auth>().isAuth ? ProductsScreen() : AuthScreen(),
           AppRoutes.productForm: (context) =>
-          context.read<Auth>().isAuth ? ProductFormScreen() : AuthScreen(),
+              context.read<Auth>().isAuth ? ProductFormScreen() : AuthScreen(),
         },
       ),
     );
