@@ -1,3 +1,6 @@
 {
-    "appName": "Avatar Shop"
+    "appName": "Avatar Shop",
+    "invalidEmail": "Email address is not valid.",
+    "weakPassword": "The password provided is too weak.",
+    "emailAlreadyInUse": "The account already exists for that email."
 }
