@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import '../utils/constants.dart';
 import 'cart.dart';
 
 ///Define um pedido composto por um ou mais produtos
@@ -29,7 +29,7 @@ class Order {
 
 ///Agrupa todos os pedidos feitos, você só poderá criar um pedido através dele
 class Orders extends ChangeNotifier {
-  final _baseUrl = Uri.parse('${Constants.baseApiURL}/orders');
+  final _baseUrl = Uri.parse('${dotenv.env['GOOGLE_API_KEY']}/orders');
   final String? _token;
   final String? _userID;
 

@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import '../exceptions/http_exception.dart';
-import '../utils/constants.dart';
 
 ///Model que representa um produto
 class Product extends ChangeNotifier {
@@ -42,7 +42,7 @@ class Product extends ChangeNotifier {
     notifyListeners();
     final response = await http.put(
       Uri.parse(
-          '${Constants.baseApiURL}/userFavorites/$userID/$id.json?auth=$token'),
+          '${dotenv.env['GOOGLE_API_KEY']}/userFavorites/$userID/$id.json?auth=$token'),
       body: json.encode(isFavorite),
     );
     if (response.statusCode >= 400) {

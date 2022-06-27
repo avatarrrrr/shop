@@ -1,16 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import '../exceptions/http_exception.dart';
-import '../utils/constants.dart';
 import 'product.dart';
 
 ///Classe que encapsulará a lista de produtos
 // ignore: prefer_mixin
 class Products with ChangeNotifier {
-  final _baseUrl = Uri.parse('${Constants.baseApiURL}/products');
+  final _baseUrl = Uri.parse('${dotenv.env['GOOGLE_API_KEY']}/products');
   final List<Product> _items;
   final String? _token;
   final String? _userID;
@@ -36,7 +36,7 @@ class Products with ChangeNotifier {
     final loadProductsResponse =
         await http.get(Uri.parse('$_baseUrl.json?auth=$_token'));
     final favoritesResponse = await http.get(Uri.parse(
-        '${Constants.baseApiURL}/userFavorites/$_userID.json?auth=$_token'));
+        '${dotenv.env['GOOGLE_API_KEY']}/userFavorites/$_userID.json?auth=$_token'));
 
     final loadProductsData = json.decode(loadProductsResponse.body);
     final favoritesData = json.decode(favoritesResponse.body);
