@@ -9,6 +9,8 @@ class AuthException implements Exception {
       _errors['invalid-email'] = appLocalizations.invalidEmail;
       _errors['email-already-in-use'] = appLocalizations.emailAlreadyInUse;
       _errors['weak-password'] = appLocalizations.weakPassword;
+      _errors['user-not-found'] = appLocalizations.userNotFound;
+      _errors['wrong-password'] = appLocalizations.wrongPassword;
     });
   }
 

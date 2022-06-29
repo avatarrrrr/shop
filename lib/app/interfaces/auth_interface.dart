@@ -1,4 +1,12 @@
+enum AuthenticationsMethods {
+  emailAndPassword,
+}
+
 abstract class AuthInterface {
-  login();
-  logout();
+  abstract bool isLogged;
+  abstract AuthenticationsMethods method;
+
+  Future<void> create({required String emailTyped, required String passwordTyped});
+  Future<void> login({required String emailTyped, required String passwordTyped});
+  Future<void> logout();
 }

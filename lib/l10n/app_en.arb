@@ -2,5 +2,7 @@
     "appName": "Avatar Shop",
     "invalidEmail": "Email address is not valid.",
     "weakPassword": "The password provided is too weak.",
-    "emailAlreadyInUse": "The account already exists for that email."
+    "emailAlreadyInUse": "The account already exists for that email.",
+    "userNotFound": "No user found for that email.",
+    "wrongPassword": "Wrong password provided for that user."
 }
