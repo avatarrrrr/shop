@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/app/interfaces/auth_interface.dart';
 import 'package:shop/app/providers/cart.dart';
+import 'package:shop/app/repository/auth/firebase/methods/email_and_password_firebase_auth_repository.dart';
 import 'package:shop/app/utils/app_localizations.dart';
 import 'package:shop/app/utils/app_routes.dart';
 import 'package:shop/app/views/auth_screen.dart';
@@ -19,6 +21,9 @@ class Shop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     late final String appName;
+    final List<AuthInterface> authenticationsProviders = [
+      EmailAndPasswordFirebaseAuthRepository(_navigatorKey)
+    ];
 
     if (!GetIt.I.isRegistered<GlobalKey<NavigatorState>>()) {
       GetIt.I.registerSingleton(_navigatorKey);
@@ -58,7 +63,8 @@ class Shop extends StatelessWidget {
         supportedLocales: AppLocalizations.supportedLocales,
         initialRoute: AppRoutes.auth,
         routes: {
-          AppRoutes.auth: (context) => AuthScreen(),
+          AppRoutes.auth: (context) =>
+              AuthScreen(authProviders: authenticationsProviders),
           AppRoutes.home: (context) => ProductOverviewScreen(),
           AppRoutes.cart: (context) => CartScreen(),
           AppRoutes.productDetail: (context) => ProductDetailScreen(),

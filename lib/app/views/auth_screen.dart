@@ -2,14 +2,33 @@ import 'dart:math';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:shop/app/repository/auth/firebase/methods/email_and_password_firebase_auth_repository.dart';
+import 'package:shop/app/interfaces/auth_interface.dart';
 
 import '../widgets/auth_card.dart';
 
 class AuthScreen extends StatelessWidget {
+  final List<AuthInterface> authProviders;
+
+  const AuthScreen({
+    Key? key,
+    required this.authProviders,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    final authsAvaliable =
+        authProviders.map((auth) => MapEntry(auth.method, auth));
+
+    final List<Widget> authentications = authsAvaliable.map(
+      (auth) {
+        if (auth.key == AuthenticationsMethods.emailAndPassword) {
+          return AuthCard(emailAuthProvider: auth.value);
+        } else {
+          return SizedBox();
+        }
+      },
+    ).toList();
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -63,11 +82,7 @@ class AuthScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      AuthCard(
-                        emailAuthProvider:
-                            EmailAndPasswordFirebaseAuthRepository(
-                                GetIt.I<GlobalKey<NavigatorState>>()),
-                      ),
+                      ...authentications,
                     ],
                   ),
                 ),

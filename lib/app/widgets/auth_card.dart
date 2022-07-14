@@ -41,31 +41,32 @@ class AuthCard extends StatelessWidget {
         child: Form(
           key: _form,
           child: ValueListenableBuilder(
-              valueListenable: _authMode,
-              child: SizedBox(height: 20),
-              builder: ((context, AuthMode authMode, child) {
-                return Column(
-                  children: [
-                    TextFieldsAuthCardWidget(
-                      authenticationMode: authMode,
-                      onSubmit: submit,
-                      formData: _authData,
-                    ),
-                    child!,
-                    ValueListenableBuilder(
-                      valueListenable: _isLoading,
-                      builder: (context, bool isLoading, child) {
-                        return ButtonsAuthCardWidget(
-                          isLoading: isLoading,
-                          authenticationMode: authMode,
-                          onSubmit: submit,
-                          switchAuthenticationMode: _switchAuthMode,
-                        );
-                      },
-                    ),
-                  ],
-                );
-              })),
+            valueListenable: _authMode,
+            child: SizedBox(height: 20),
+            builder: (context, AuthMode authMode, child) {
+              return Column(
+                children: [
+                  TextFieldsAuthCardWidget(
+                    authenticationMode: authMode,
+                    onSubmit: submit,
+                    formData: _authData,
+                  ),
+                  child!,
+                  ValueListenableBuilder(
+                    valueListenable: _isLoading,
+                    builder: (context, bool isLoading, child) {
+                      return ButtonsAuthCardWidget(
+                        isLoading: isLoading,
+                        authenticationMode: authMode,
+                        onSubmit: submit,
+                        switchAuthenticationMode: _switchAuthMode,
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
