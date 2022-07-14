@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart.dart';
-import '../providers/products.dart';
 import '../utils/app_routes.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/badge.dart';
 import '../widgets/product_grid.dart';
 
-///Enum que define os tipos de exibição dos favoritos
 enum FilterOptions {
-  ///Mostra somente os favoritos
   favorite,
-
-  ///Mostra todos
   all,
 }
 
-///Widget Main
 class ProductOverviewScreen extends StatefulWidget {
   @override
   _ProductOverviewScreenState createState() => _ProductOverviewScreenState();
@@ -29,10 +23,10 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   @override
   void initState() {
     super.initState();
-    context
-        .read<Products>()
-        .loadProducts()
-        .then((_) => setState(() => _isLoading = false));
+    // context
+    //     .read<Products>()
+    //     .loadProducts()
+    //     .then((_) => setState(() => _isLoading = false));
   }
 
   @override

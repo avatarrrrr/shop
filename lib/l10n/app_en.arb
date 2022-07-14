@@ -4,5 +4,22 @@
     "weakPassword": "The password provided is too weak.",
     "emailAlreadyInUse": "The account already exists for that email.",
     "userNotFound": "No user found for that email.",
-    "wrongPassword": "Wrong password provided for that user."
+    "wrongPassword": "Wrong password provided for that user.",
+    "emailFieldPlaceholder": "E-mail",
+    "passwordFieldPlaceholder": "Password",
+    "tooManyRequests": "We have blocked all requests from this device due to unusual activity. Try again later.",
+    "passwordInvalid": "The password is invalid!",
+    "confirmPasswordPlaceHolder": "Confirm password",
+    "thePasswordsMustBeTheSame": "The passwords must be the same!",
+    "sign": "Sign in",
+    "register": "Register",
+    "switchToSignImOrRegisterText": "Switch to '{signMode}' mode!",
+    "@switchToSignImOrRegisterText": {
+        "placeholders": {
+            "signMode": {
+                "type": "String",
+                "example": "Register"
+            }
+        }
+    }
 }

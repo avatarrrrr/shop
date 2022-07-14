@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get_it/get_it.dart';
+import 'package:shop/app/interfaces/auth_interface.dart';
 
-import '../providers/auth.dart';
 import '../utils/app_routes.dart';
 
-///Drawer que possibilita a navegação entre a tela inicial e a tela de pedidos
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -40,10 +39,7 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Sair'),
-            onTap: () {
-              context.read<Auth>().logout();
-              Navigator.pushReplacementNamed(context, AppRoutes.auth);
-            },
+            onTap: () => GetIt.I<AuthInterface>().logout(),
           ),
         ],
       ),

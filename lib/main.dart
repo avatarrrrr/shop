@@ -1,17 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shop/firebase_options.dart';
 import 'app/app_widget.dart';
 
 Future<void> main() async {
   await dotenv.load();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(Shop());
-}
-
-Future<AppLocalizations> get getAppLocalizationsWithoutContext {
-  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  final preferred = widgetsBinding.window.locales;
-  const supported = AppLocalizations.supportedLocales;
-  final locale = basicLocaleListResolution(preferred, supported);
-  return AppLocalizations.delegate.load(locale);
 }

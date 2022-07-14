@@ -1,30 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:shop/app/controllers/auth_screen_controller.dart';
+import 'package:shop/app/interfaces/auth_interface.dart';
+import 'package:shop/app/widgets/auth_card_widgets/buttons_auth_card_widget.dart';
+import 'package:shop/app/widgets/auth_card_widgets/text_fields_auth_card_widget.dart';
 
-import '../exceptions/auth_exception.dart';
-import '../providers/auth.dart';
-
-///Controla se o card vai possuir a estrutura pra fazer um cadastro ou registro.
 enum AuthMode {
-  ///Enum pra fazer o registro.
   register,
-
-  ///Enum para fazer o login.
   login,
 }
 
-///Formulário de autenticação do usuário na tela de login
-class AuthCard extends StatefulWidget {
-  @override
-  _AuthCardState createState() => _AuthCardState();
-}
+class AuthCard extends StatelessWidget {
+  final AuthInterface emailAuthProvider;
 
-class _AuthCardState extends State<AuthCard> {
-  AuthMode _authMode = AuthMode.login;
-  bool isLoading = false;
+  AuthCard({
+    Key? key,
+    required this.emailAuthProvider,
+  });
+
+  final _isLoading = ValueNotifier(false);
+  final ValueNotifier<AuthMode> _authMode = ValueNotifier(AuthMode.login);
+  final controller = AuthScreenController();
   final _form = GlobalKey<FormState>();
-  final _passwordController = TextEditingController();
-  final Map<String, String?> _authData = {
+  final Map<String, String> _authData = {
     'email': '',
     'password': '',
   };
@@ -32,6 +29,7 @@ class _AuthCardState extends State<AuthCard> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
+
     return Card(
       elevation: 8,
       shape: RoundedRectangleBorder(
@@ -42,131 +40,67 @@ class _AuthCardState extends State<AuthCard> {
         width: deviceSize.width * 0.75,
         child: Form(
           key: _form,
-          child: Column(
-            children: [
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'E-mail',
-                ),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value!.isEmpty || !value.contains('@')) {
-                    return 'E-mail inválido!';
-                  } else {
-                    return null;
-                  }
-                },
-                onSaved: (value) => _authData['email'] = value,
-              ),
-              TextFormField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                ),
-                obscureText: true,
-                validator: (value) {
-                  if (value!.isEmpty || value.length < 6) {
-                    return 'Informe uma senha válida!';
-                  } else {
-                    return null;
-                  }
-                },
-                onSaved: (value) => _authData['password'] = value,
-              ),
-              if (_authMode == AuthMode.register)
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Confirm password',
-                  ),
-                  obscureText: true,
-                  validator: _authMode == AuthMode.register
-                      ? (value) {
-                          if (value != _passwordController.text) {
-                            return 'As senhas devem ser iguais!';
-                          } else {
-                            return null;
-                          }
-                        }
-                      : null,
-                ),
-              SizedBox(height: 20),
-              if (isLoading)
-                CircularProgressIndicator()
-              else
-                ElevatedButton(
-                  onPressed: _submit,
-                  child: Text(
-                    _authMode == AuthMode.login ? 'Entrar' : 'Registrar',
-                  ),
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
+          child: ValueListenableBuilder(
+              valueListenable: _authMode,
+              child: SizedBox(height: 20),
+              builder: ((context, AuthMode authMode, child) {
+                return Column(
+                  children: [
+                    TextFieldsAuthCardWidget(
+                      authenticationMode: authMode,
+                      onSubmit: submit,
+                      formData: _authData,
                     ),
-                    padding: MaterialStateProperty.all(
-                      EdgeInsets.symmetric(
-                        horizontal: 30,
-                        vertical: 8,
-                      ),
+                    child!,
+                    ValueListenableBuilder(
+                      valueListenable: _isLoading,
+                      builder: (context, bool isLoading, child) {
+                        return ButtonsAuthCardWidget(
+                          isLoading: isLoading,
+                          authenticationMode: authMode,
+                          onSubmit: submit,
+                          switchAuthenticationMode: _switchAuthMode,
+                        );
+                      },
                     ),
-                  ),
-                ),
-              TextButton(
-                onPressed: _switchAuthMode,
-                child: Text(
-                  """
-Alternar para ${_authMode == AuthMode.login ? 'registro' : 'login'}""",
-                ),
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all(Theme.of(context).primaryColor),
-                ),
-              ),
-            ],
-          ),
+                  ],
+                );
+              })),
         ),
       ),
     );
   }
 
-  void _submit() async {
-    if (!_form.currentState!.validate()) {
-      return;
-    }
-    setState(() => isLoading = true);
-
-    _form.currentState!.save();
-
-    var auth = context.read<Auth>();
-
-    try {
-      if (_authMode == AuthMode.login) {
-        await auth.login(_authData["email"], _authData["password"]);
-      } else {
-        await auth.register(_authData["email"], _authData["password"]);
-      }
-    } on AuthException catch (error) {
-      _showErrorDiolog(error.toString());
-    } on Exception catch (_) {
-      _showErrorDiolog("There a error!");
-    }
-
-    setState(() => isLoading = false);
+  void submit() {
+    _isLoading.value = true;
+    controller.submit(
+      auth: emailAuthProvider,
+      authMode: _authMode.value,
+      data: _authData,
+      formKey: _form,
+    )
+      ..catchError((error) {
+        _isLoading.value = false;
+        _showErrorDiolog(error.toString());
+      })
+      ..then(
+        (_) {
+          _isLoading.value = false;
+        },
+      );
   }
 
   void _switchAuthMode() {
-    if (_authMode == AuthMode.login) {
-      _authMode = AuthMode.register;
+    if (_authMode.value == AuthMode.login) {
+      _authMode.value = AuthMode.register;
     } else {
-      _authMode = AuthMode.login;
+      _authMode.value = AuthMode.login;
     }
-    setState(() => _authMode);
   }
 
   void _showErrorDiolog(String message) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context)
+    ScaffoldMessenger.of(_form.currentContext!).hideCurrentSnackBar();
+    ScaffoldMessenger.of(_form.currentContext!)
         .showSnackBar(SnackBar(content: Text(message)));
   }
 }

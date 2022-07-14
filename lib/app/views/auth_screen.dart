@@ -2,10 +2,11 @@ import 'dart:math';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:shop/app/repository/auth/firebase/methods/email_and_password_firebase_auth_repository.dart';
 
 import '../widgets/auth_card.dart';
 
-///Tela de autenticação, o aplicativo sempre irá se inicializar com ele.
 class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -56,15 +57,17 @@ class AuthScreen extends StatelessWidget {
                         child: Text(
                           AppLocalizations.of(context)!.appName,
                           style: TextStyle(
-                              color: Theme.of(context)
-                                  .accentTextTheme
-                                  .headline6!
-                                  .color,
-                              fontSize: 45,
-                              fontFamily: 'Anton'),
+                            color: Colors.white,
+                            fontSize: 45,
+                            fontFamily: 'Anton',
+                          ),
                         ),
                       ),
-                      AuthCard(),
+                      AuthCard(
+                        emailAuthProvider:
+                            EmailAndPasswordFirebaseAuthRepository(
+                                GetIt.I<GlobalKey<NavigatorState>>()),
+                      ),
                     ],
                   ),
                 ),
