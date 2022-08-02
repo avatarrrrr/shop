@@ -21,5 +21,12 @@
                 "example": "Register"
             }
         }
-    }
+    },
+    "resetPasswordSucess": "Okay! This job is done! Acess your email to reset your password and try login again!",
+    "emailWrong": "Did you typed your email wrong on register? Cancel the operation on bellow button!",
+    "emailIsNotVerifield": "Your email is not verified! Please, check your email!",
+    "verifyAgain": "Verify it again!",
+    "cancel": "Cancel!",
+    "resendEmailVerification": "You already verify the email? Press the bellow button!",
+    "passwordForget": "Forget your password?"
 }

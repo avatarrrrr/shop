@@ -9,13 +9,16 @@ class TextFieldsAuthCardWidget extends StatelessWidget with Validators {
     required this.authenticationMode,
     required this.onSubmit,
     required this.formData,
-  }) : super(key: key);
+  }) : super(key: key) {
+    emailController = TextEditingController(text: formData['email']);
+  }
 
   final void Function() onSubmit;
   final AuthMode authenticationMode;
   final passwordFocusNode = FocusNode();
   final confirmPasswordFocusNode = FocusNode();
   final Map<String, String> formData;
+  late final emailController;
   final passwordController = TextEditingController();
 
   @override
@@ -26,6 +29,7 @@ class TextFieldsAuthCardWidget extends StatelessWidget with Validators {
     return Column(
       children: [
         TextFormField(
+          controller: emailController,
           decoration: InputDecoration(
             labelText: appLocalization.emailFieldPlaceholder,
           ),

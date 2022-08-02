@@ -13,49 +13,79 @@ class ButtonsAuthCardWidget extends StatelessWidget {
 
   final bool isLoading;
   final AuthMode authenticationMode;
-  final void Function() switchAuthenticationMode;
+  final void Function(AuthMode) switchAuthenticationMode;
   final void Function() onSubmit;
 
   @override
   Widget build(BuildContext context) {
     final appLocalizations = AppLocalizations.of(context)!;
+    final textButtonStyle = ButtonStyle(
+      foregroundColor:
+          MaterialStateProperty.all(Theme.of(context).primaryColor),
+    );
+    final isNotRecoverPasswordMode =
+        authenticationMode != AuthMode.recoverPassword;
+
+    final showButtonsSubmitAndSwitchAuthentication = isNotRecoverPasswordMode
+        ? [
+            ElevatedButton(
+              child: isLoading
+                  ? CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                  : Text(
+                      authenticationMode == AuthMode.login
+                          ? appLocalizations.sign
+                          : appLocalizations.register,
+                    ),
+              onPressed: isLoading ? () {} : onSubmit,
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 8,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                if (authenticationMode == AuthMode.login) {
+                  switchAuthenticationMode(AuthMode.register);
+                } else {
+                  switchAuthenticationMode(AuthMode.login);
+                }
+              },
+              child: Text(
+                appLocalizations.switchToSignImOrRegisterText(
+                  authenticationMode == AuthMode.login
+                      ? appLocalizations.register
+                      : appLocalizations.sign,
+                ),
+              ),
+              style: textButtonStyle,
+            ),
+          ]
+        : [];
 
     return Column(
       children: [
-        ElevatedButton(
-          child: isLoading
-              ? CircularProgressIndicator(
-                  color: Colors.white,
-                )
-              : Text(
-                  authenticationMode == AuthMode.login
-                      ? appLocalizations.sign
-                      : appLocalizations.register,
-                ),
-          onPressed: isLoading ? () {} : onSubmit,
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            padding: EdgeInsets.symmetric(
-              horizontal: 30,
-              vertical: 8,
-            ),
-          ),
-        ),
+        ...showButtonsSubmitAndSwitchAuthentication,
         TextButton(
-          onPressed: switchAuthenticationMode,
+          onPressed: () {
+            if (isNotRecoverPasswordMode) {
+              switchAuthenticationMode(AuthMode.recoverPassword);
+            } else {
+              switchAuthenticationMode(AuthMode.login);
+            }
+          },
           child: Text(
-            appLocalizations.switchToSignImOrRegisterText(
-              authenticationMode == AuthMode.login
-                  ? appLocalizations.register
-                  : appLocalizations.sign,
-            ),
+            isNotRecoverPasswordMode
+                ? appLocalizations.passwordForget
+                : appLocalizations.cancel,
           ),
-          style: ButtonStyle(
-            foregroundColor:
-                MaterialStateProperty.all(Theme.of(context).primaryColor),
-          ),
+          style: textButtonStyle,
         ),
       ],
     );

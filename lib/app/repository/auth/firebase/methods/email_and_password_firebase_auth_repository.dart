@@ -13,21 +13,36 @@ class EmailAndPasswordFirebaseAuthRepository extends FirebaseAuthRepository {
 
   @override
   create({required String emailTyped, required String passwordTyped}) async {
-    try {
-      await instance.createUserWithEmailAndPassword(
-          email: emailTyped, password: passwordTyped);
-    } on FirebaseAuthException catch (error) {
-      throw AuthException(error.code);
-    } catch (error) {
-      throw error;
-    }
+    await _errorTreat(
+      () async => await instance.createUserWithEmailAndPassword(
+        email: emailTyped,
+        password: passwordTyped,
+      ),
+    );
   }
 
   @override
   login({required String emailTyped, required String passwordTyped}) async {
+    await _errorTreat(
+      () async => await instance.signInWithEmailAndPassword(
+        email: emailTyped,
+        password: passwordTyped,
+      ),
+    );
+  }
+
+  @override
+  Future<void> sendResetPasswordEmail({required String emailTyped}) async {
+    await _errorTreat(
+      () async => await instance.sendPasswordResetEmail(
+        email: emailTyped,
+      ),
+    );
+  }
+
+  Future<void> _errorTreat(dynamic Function() operation) async {
     try {
-      await instance.signInWithEmailAndPassword(
-          email: emailTyped, password: passwordTyped);
+      await operation();
     } on FirebaseAuthException catch (error) {
       throw AuthException(error.code);
     } catch (error) {

@@ -6,13 +6,11 @@ import 'package:shop/app/utils/app_routes.dart';
 
 abstract class FirebaseAuthRepository implements AuthInterface {
   @override
-  late Stream isLogged;
-
+  final ValueNotifier<bool> emailVerifield = ValueNotifier(true);
   final instance = FirebaseAuth.instance;
 
   FirebaseAuthRepository(GlobalKey<NavigatorState> navigatorKey) {
-    isLogged = instance.authStateChanges();
-    isLogged.listen((event) {
+    instance.userChanges().listen((event) {
       late String? currentRoute;
 
       navigatorKey.currentState?.popUntil((route) {
@@ -20,9 +18,21 @@ abstract class FirebaseAuthRepository implements AuthInterface {
         return true;
       });
 
+      if (event == null) {
+        emailVerifield.value = true;
+      }
+
       if (currentRoute != AppRoutes.auth && event == null) {
         navigatorKey.currentState?.pushReplacementNamed(AppRoutes.auth);
       } else if (event != null && currentRoute == AppRoutes.auth) {
+        if (!event.emailVerified) {
+          emailVerifield.value = false;
+          sendVericationEmail();
+          return;
+        } else {
+          emailVerifield.value = true;
+        }
+
         navigatorKey.currentState?.pushReplacementNamed(AppRoutes.home);
 
         final getItInstance = GetIt.I;
@@ -35,7 +45,22 @@ abstract class FirebaseAuthRepository implements AuthInterface {
   }
 
   @override
+  deleteUser() async {
+    instance.currentUser?.delete();
+  }
+
+  @override
   logout() async {
     instance.signOut();
+  }
+
+  @override
+  reloadUserMetadada() async {
+    instance.currentUser?.reload();
+  }
+
+  @override
+  Future<void> sendVericationEmail() async {
+    instance.currentUser?.sendEmailVerification();
   }
 }

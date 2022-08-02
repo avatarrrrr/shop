@@ -8,11 +8,11 @@ class AuthScreenController {
     required AuthInterface auth,
     GlobalKey<FormState>? formKey,
     required AuthMode authMode,
-    Map<String, String> data = const {},
+    Map<String, String>? data,
   }) async {
     final instanceOfGetIt = GetIt.I;
 
-    if (formKey != null && data.isNotEmpty) {
+    if (formKey != null && data != null) {
       if (!formKey.currentState!.validate()) {
         return;
       }
